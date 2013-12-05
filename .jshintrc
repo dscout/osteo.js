@@ -1,0 +1,17 @@
+{
+  "browser": true,
+  "eqeqeq": true,
+  "immed": true,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "quotmark": "double",
+  "trailing": true,
+  "undef": true,
+  "unused": true,
+  "globals": {
+    "_": true,
+    "Backbone": true,
+    "Osteo": true
+  }
+}

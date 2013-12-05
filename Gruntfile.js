@@ -1,16 +1,21 @@
 module.exports = function(grunt) {
   grunt.initConfig({
-    coffee: {
-      compile: {
-        options: {
-          bare: false,
-          join: true
-        },
-        files: {
-          'osteo.js': ['lib/osteo.coffee'],
-          'test/osteo_test.js': ['test/*.coffee']
-        }
+    concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['lib/osteo.js', 'lib/*.js'],
+        dest: 'osteo.js'
       }
+    },
+
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      beforeconcat: ['lib/*.js'],
+      afterconcat:  ['osteo.js']
     },
 
     uglify: {
@@ -36,17 +41,18 @@ module.exports = function(grunt) {
     },
 
     watch: {
-      files: ['lib/*.coffee', 'test/*.coffee'],
-      tasks: ['coffee:compile']
+      files: ['lib/*.js', 'test/*.js'],
+      tasks: ['concat', 'jshint']
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-coffee');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha');
 
-  grunt.registerTask('test',    ['coffee:compile', 'mocha']);
+  grunt.registerTask('test',    ['concat', 'mocha']);
   grunt.registerTask('default', ['test']);
-  grunt.registerTask('release', ['coffee:compile', 'mocha', 'uglify']);
+  grunt.registerTask('release', ['concat', 'mocha', 'uglify']);
 };

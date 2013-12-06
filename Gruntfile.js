@@ -1,9 +1,6 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     concat: {
-      options: {
-        separator: ';',
-      },
       dist: {
         src: ['lib/osteo.js', 'lib/*.js'],
         dest: 'osteo.js'

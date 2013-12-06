@@ -29,6 +29,20 @@
 })();
 
 (function() {
+  Osteo.Collection = Backbone.Collection.extend({
+    toPresenters: function(presenter) {
+      if (presenter === undefined) {
+        presenter = Osteo.Presenter;
+      }
+
+      return this.map(function(model) {
+        return new presenter(model);
+      });
+    }
+  });
+})();
+
+(function() {
   Osteo.Model = Backbone.Model.extend({
     defaultAutoSaveDelay: 500,
 

@@ -39,7 +39,7 @@ module.exports = function(grunt) {
     },
 
     watch: {
-      files: ['lib/*.js', 'test/*.js'],
+      files: ['lib/*.js'],
       tasks: ['concat', 'jshint']
     }
   });

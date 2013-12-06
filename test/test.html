@@ -22,11 +22,10 @@
     <script src="collection_test.js"></script>
     <script src="model_test.js"></script>
     <script src="presenter_test.js"></script>
+    <script src="view_test.js"></script>
 
     <script type="text/javascript">
-      if (window.mochaPhantomJS) {
-        mochaPhantomJS.run();
-      } else {
+      if (navigator.userAgent.indexOf('PhantomJS') < 0) {
         mocha.run();
       }
     </script>

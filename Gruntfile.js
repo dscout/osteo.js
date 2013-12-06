@@ -26,11 +26,12 @@ module.exports = function(grunt) {
     },
 
     mocha: {
-      src: ['test/test.html'],
+      src: 'test/test.html',
       options: {
         bail: true,
         log: true,
         run: true,
+        timeout: 1000,
         mocha: {
           ignoreLeaks: true
         }

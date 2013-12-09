@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     concat: {
       dist: {
-        src: ['lib/osteo.js', 'lib/*.js'],
+        src: ['lib/osteo.js', 'lib/*.js', 'lib/mixins/*.js'],
         dest: 'osteo.js'
       }
     },
@@ -11,7 +11,7 @@ module.exports = function(grunt) {
       options: {
         jshintrc: true
       },
-      beforeconcat: ['lib/*.js'],
+      beforeconcat: ['lib/**/*.js'],
       afterconcat:  ['osteo.js']
     },
 
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
     },
 
     watch: {
-      files: ['lib/*.js'],
+      files: ['lib/**/*.js'],
       tasks: ['concat', 'jshint']
     }
   });

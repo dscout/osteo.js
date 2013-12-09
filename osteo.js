@@ -5,28 +5,38 @@
 })();
 
 (function() {
-  var Cache = Osteo.Cache = function() {
-    this.cidCache = {};
+  Osteo.Cache = function() {
+    this.cache = {};
   };
 
-  Cache.prototype.add = function(object) {
-    if (object.model !== undefined) {
-      this.cidCache[object.model.cid] = object;
+  Osteo.Cache.prototype = {
+    add: function(object) {
+      if (object.model) {
+        this.cache[object.model.cid] = object;
+      }
+
+      this.cache[object.cid] = object;
+    },
+
+    get: function(objOrCid) {
+      if (objOrCid.cid) {
+        return this.cache[objOrCid.cid];
+      } else {
+        return this.cache[objOrCid];
+      }
+    },
+
+    remove: function(object) {
+      if (object.model !== undefined) {
+        delete(this.cache[object.model.cid]);
+      }
+
+      delete(this.cache[object.cid]);
+    },
+
+    cached: function() {
+      return _.uniq(_.values(this.cache));
     }
-
-    this.cidCache[object.cid] = object;
-  };
-
-  Cache.prototype.get = function(cid) {
-    return this.cidCache[cid];
-  };
-
-  Cache.prototype.remove = function(object) {
-    if (object.model !== undefined) {
-      delete(this.cidCache[object.model.cid]);
-    }
-
-    delete(this.cidCache[object.cid]);
   };
 })();
 
@@ -173,14 +183,14 @@
         this.render();
       }
 
-      this.$el.show();
+      this.$el.removeClass("hide");
 
       return this;
     },
 
     hide: function() {
       if (this.isRendered()) {
-        this.$el.hide();
+        this.$el.addClass("hide");
       }
 
       return this;
@@ -234,4 +244,107 @@
       });
     }
   };
+})();
+
+(function() {
+  Osteo.CollectionView = Osteo.View.extend({
+    viewClass: Osteo.View,
+
+    initialize: function(options) {
+      Osteo.View.prototype.initialize.call(this, options);
+
+      if (options.selector)  this.selector  = options.selector;
+      if (options.viewClass) this.viewClass = options.viewClass;
+
+      if (this.collection) {
+        this.listenTo(this.collection, "add",     this.addView);
+        this.listenTo(this.collection, "destroy", this.modelDestroyed);
+        this.listenTo(this.collection, "reset",   this.reset);
+        this.listenTo(this.collection, "sort",    this.sort);
+      }
+
+      this.viewCache = new Osteo.Cache();
+    },
+
+    container: function() {
+      if (!this._container) {
+        if (this.selector) {
+          this._container = this.$(this.selector);
+        } else {
+          this._container = this.$el;
+        }
+      }
+
+      return this._container;
+    },
+
+    addView: function(model, collection) {
+      var view  = this.getView(model).show(),
+          index = this.collection.indexOf(model),
+          exModel, exView;
+
+      if (index === 0) {
+        this.container().prepend(view.$el);
+      } else {
+        exModel = collection.at(index - 1);
+        exView  = this.getView(exModel);
+
+        exView.$el.after(view.$el);
+      }
+    },
+
+    appendView: function(model) {
+      var $elem = this.getView(model).show().$el;
+
+      this.container().append($elem);
+    },
+
+    getView: function(model) {
+      var view = this.viewCache.get(model);
+
+      if (!view) {
+        view = new this.viewClass({ model: model });
+        this.viewCache.add(view);
+      }
+
+      return view;
+    },
+
+    render: function() {
+      Osteo.View.prototype.render.call(this);
+      this.reset();
+
+      return this;
+    },
+
+    renderContext: function() {
+      return this.collection;
+    },
+
+    reset: function() {
+      this.container().empty();
+      this.collection.each(this.appendView, this);
+
+      return this;
+    },
+
+    sort: function() {
+      var $container = this.container(),
+          viewCache  = this.viewCache;
+
+      _.each(this.viewCache.cached(), function(view) {
+        view.$el.detach();
+      });
+
+      this.collection.each(function(model) {
+        $container.append(viewCache.get(model).$el);
+      });
+    },
+
+    modelDestroyed: function(model) {
+      var view = this.getView(model);
+      this.viewCache.remove(model);
+      view.destroy();
+    }
+  });
 })();

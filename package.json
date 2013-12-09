@@ -1,7 +1,7 @@
 {
   "name": "osteo.js",
   "version": "0.1.0",
-  "description": "Opinionated wrapper around Backbone",
+  "description": "Opinionated Backbone",
   "main": "osteo.js",
   "directories": {
     "test": "test"

@@ -1,0 +1,26 @@
+{
+  "name": "osteo.js",
+  "main": "osteo.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/dscout/osteo.js",
+  "authors": [
+    "Parker Selbert <parker@sorentwo.com>"
+  ],
+  "description": "Opinionated Backbone",
+  "keywords": [
+    "backbone"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "backbone" : "~1.1",
+    "jquery"   : "~2.0",
+    "lodash"   : "~2.4"
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

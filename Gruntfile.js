@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 
     uglify: {
       options: {
-        report: 'min'
+        report: 'gzip'
       },
       dist: {
         src: 'osteo.js',

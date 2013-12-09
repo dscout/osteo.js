@@ -21,6 +21,8 @@ describe('Osteo.Cache', function() {
 
       expect(cache.get('a1')).to.eql(object);
       expect(cache.get('b1')).to.eql(object);
+      expect(cache.get(object)).to.eql(object);
+      expect(cache.get(object.model)).to.eql(object);
     });
   });
 
@@ -33,6 +35,16 @@ describe('Osteo.Cache', function() {
 
       expect(cache.get('a1')).to.be.undefined
       expect(cache.get('b1')).to.be.undefined
+    });
+  });
+
+  describe('#cached', function() {
+    it('exposes the unique set of cached objects', function() {
+      var object = { cid: 'a1', model: { cid: 'b1' } }
+
+      cache.add(object);
+
+      expect(cache.cached().length).to.eq(1);
     });
   });
 });

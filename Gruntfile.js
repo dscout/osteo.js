@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     concat: {
       dist: {
-        src: ['lib/osteo.js', 'lib/*.js', 'lib/mixins/*.js'],
+        src: ['lib/osteo.js', 'lib/*.js', 'lib/**/*.js'],
         dest: 'osteo.js'
       }
     },

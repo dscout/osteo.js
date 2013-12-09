@@ -1,6 +1,7 @@
 (function() {
   window.Osteo = {
-    TEMPLATE: {}
+    TEMPLATE: {},
+    VERSION:  "0.1.0"
   };
 })();
 

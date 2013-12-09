@@ -70,7 +70,6 @@
     this.model.on("change", this.replicateChanged, this);
 
     this.duplicateAttributes();
-
   };
 
   Osteo.Presenter.prototype = {
@@ -88,8 +87,6 @@
       });
     },
 
-    // for key of model.changed
-    //   @[key] = model.get(key) unless _.isFunction(@[key])
     replicateChanged: function(model) {
       var self = this;
 
@@ -110,12 +107,11 @@
       this.options = options || {};
       this.lazyRenderDelay = options.lazyRenderDelay || this.lazyRenderDelay;
 
-      if (options.presenter) {
-        this.presenter = options.presenter;
-      }
+      if (options.presenter) this.presenter = options.presenter;
+      if (options.template)  this.template  = options.template;
 
-      if (options.template) {
-        this.template = options.template;
+      if (options.disableBoundRendering !== true) {
+        Osteo.BoundRenderer.extend(this);
       }
     },
 
@@ -164,11 +160,7 @@
 
     renderContext: function() {
       if (this.presenter) {
-        if (_.isFunction(this.presenter)) {
-          return this.presenter.apply(this, this.model);
-        } else {
-          return this.presenter;
-        }
+        return this.presenter;
       } else if (this.model) {
         return this.model.attributes;
       } else {
@@ -210,4 +202,36 @@
       return Osteo.TEMPLATES[template];
     }
   });
+})();
+
+(function() {
+  Osteo.BoundRenderer = {
+    extend: function(view) {
+      view.boundRender   = this.boundRender;
+      view.boundElements = {};
+
+      if (view.model && view.model.on) {
+        view.listenTo(view.model, "change", view.boundRender);
+      }
+    },
+
+    boundRender: function(model) {
+      var $element, self = this;
+
+      _.forOwn(model.changed, function(value, key) {
+        if (self.boundElements[key]) {
+          $element = self.boundElements[key];
+        } else {
+          $element = self.$("[data-bind=" + key + "]");
+          self.boundElements[key] = $element;
+        }
+
+        if (self.presenter) {
+          value = self.presenter[key];
+        }
+
+        if ($element.length) $element.text(value);
+      });
+    }
+  };
 })();

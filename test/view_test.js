@@ -65,16 +65,6 @@ describe('Osteo.View', function() {
 
       expect(view.renderContext()).to.eql({ id: 100 });
     });
-
-    it('is a new presenter around the model', function() {
-      var presenter = function(model) { return { id: 200 }; },
-          view = new Osteo.View({
-            model: { id: 100 },
-            presenter: presenter
-          });
-
-      expect(view.renderContext()).to.eql({ id: 200 });
-    });
   });
 
   describe('#lazyRender', function() {
@@ -88,6 +78,14 @@ describe('Osteo.View', function() {
         expect(view.render.called).to.be.true;
         done();
       }, 2);
+    });
+  });
+
+  describe('#boundRender', function() {
+    it('automatically includes bound rendering', function() {
+      view = new Osteo.View({ boundAttributes: ['title'] });
+
+      expect(view.boundRender).not.to.be.undefined;
     });
   });
 

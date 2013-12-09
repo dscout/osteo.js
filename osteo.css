@@ -1,0 +1,27 @@
+.osteo-screen {
+  background: black;
+  bottom: 0;
+  display: none;
+  left: 0;
+  opacity: 0.75;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9997;
+}
+
+.osteo-modal {
+  background: #fff;
+  border-radius: 20px;
+  bottom: 0;
+  display: none;
+  height: 240px;
+  left: 0;
+  margin: auto;
+  padding: 20px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 600px;
+  z-index: 9998;
+}

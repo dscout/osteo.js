@@ -3,7 +3,7 @@ describe('Osteo', function() {
     expect(Osteo).not.to.be.undefined;
   });
 
-  it('defines a TEMPLATE object', function() {
-    expect(Osteo.TEMPLATE).not.to.be.undefined;
+  it('defines a TEMPLATES object', function() {
+    expect(Osteo.TEMPLATES).not.to.be.undefined;
   });
 });

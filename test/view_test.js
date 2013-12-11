@@ -31,6 +31,10 @@ describe('Osteo.View', function() {
   });
 
   describe('#renderTemplate', function() {
+    beforeEach(function() {
+      Osteo.TEMPLATES = {};
+    });
+
     it('looks up and calls the template', function() {
       Osteo.TEMPLATES = {
         generic: function(context) {
@@ -42,6 +46,14 @@ describe('Osteo.View', function() {
 
       expect(view.renderTemplate('generic', { title: 'osteo' }))
         .to.eq('<p>osteo</p>');
+    });
+
+    it('throws an exception without a template', function() {
+      view = new Osteo.View({});
+
+      fn = function() { view.renderTemplate('unknown', {}) };
+
+      expect(fn).to.throw('No such template: unknown');
     });
   });
 

@@ -180,9 +180,7 @@
     },
 
     show: function() {
-      if (!this.isRendered()) {
-        this.render();
-      }
+      if (!this.isRendered()) this.render();
 
       this.$el.removeClass("hide");
 
@@ -190,9 +188,7 @@
     },
 
     hide: function() {
-      if (this.isRendered()) {
-        this.$el.addClass("hide");
-      }
+      if (this.isRendered()) this.$el.addClass("hide");
 
       return this;
     },
@@ -210,7 +206,11 @@
     },
 
     _lookupTemplate: function(template) {
-      return Osteo.TEMPLATES[template];
+      var resolved = Osteo.TEMPLATES[template];
+
+      if (!resolved) throw new Error("No such template: " + template);
+
+      return resolved;
     }
   });
 })();

@@ -44,9 +44,7 @@
 (function() {
   Osteo.Collection = Backbone.Collection.extend({
     toPresenters: function(presenter) {
-      if (presenter === undefined) {
-        presenter = Osteo.Presenter;
-      }
+      if (!presenter) presenter = Osteo.Presenter;
 
       return this.map(function(model) {
         return new presenter(model);
@@ -78,9 +76,9 @@
 (function() {
   Osteo.Presenter = function(model) {
     this.model = model;
-    this.model.on("change", this.replicateChanged, this);
+    this.model.on("change", this.replicate, this);
 
-    this.duplicateAttributes();
+    this.replicate(model);
   };
 
   Osteo.Presenter.prototype = {
@@ -88,24 +86,12 @@
       return this.model.get(key);
     },
 
-    duplicateAttributes: function() {
-      var self = this;
+    replicate: function(model) {
+      var changed = _.isEmpty(model.changed) ? model.attributes : model.changed;
 
-      _.forOwn(this.model.attributes, function(value, key) {
-        if (self[key] === undefined) {
-          self[key] = value;
-        }
-      });
-    },
-
-    replicateChanged: function(model) {
-      var self = this;
-
-      _.forOwn(model.changed, function(_value, key) {
-        if (!_.isFunction(self[key])) {
-          self[key] = model.get(key);
-        }
-      });
+      for (var key in changed) {
+        if (!_.isFunction(this[key])) this[key] = changed[key];
+      }
     }
   };
 })();
@@ -227,22 +213,24 @@
     },
 
     boundRender: function(model) {
-      var $element, self = this;
+      var $element, value;
 
-      _.forOwn(model.changed, function(value, key) {
-        if (self.boundElements[key]) {
-          $element = self.boundElements[key];
+      for (var key in model.changed) {
+        if (this.boundElements[key]) {
+          $element = this.boundElements[key];
         } else {
-          $element = self.$("[data-bind=" + key + "]");
-          self.boundElements[key] = $element;
+          $element = this.$("[data-bind=" + key + "]");
+          this.boundElements[key] = $element;
         }
 
-        if (self.presenter) {
-          value = self.presenter[key];
+        if (this.presenter) {
+          value = this.presenter[key];
+        } else {
+          value = model.changed[key];
         }
 
         if ($element.length) $element.text(value);
-      });
+      }
     }
   };
 })();

@@ -26,5 +26,11 @@ describe('Osteo.I18n', function() {
       expect(t('simple.path', { name: 'Osteo', thing: 'framework' }))
         .to.eq('Hello Osteo, the framework');
     });
+
+    it('uses the hash option for replacement', function() {
+      Osteo.TRANSLATIONS = { 'simple': '%{val}' };
+
+      expect(t('simple', { hash: { val: 'Osteo' }})).to.eq('Osteo');
+    });
   });
 });

@@ -5,7 +5,7 @@ module.exports = function(grunt) {
         src: ['lib/osteo.js', 'lib/*.js', 'lib/**/*.js'],
         dest: 'osteo.js',
         options: {
-          banner: ";(function(window, undefined) {\n \"use strict\";",
+          banner: ";(function(window, undefined) {\n\"use strict\";\n",
           footer: "}(window));"
         }
       }

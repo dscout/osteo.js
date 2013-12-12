@@ -1,5 +1,6 @@
 ;(function(window, undefined) {
- "use strict";window.Osteo = {
+"use strict";
+window.Osteo = {
   TEMPLATES:    {},
   TRANSLATIONS: {},
   VERSION:      "0.2.0"

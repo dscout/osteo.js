@@ -1,493 +1,473 @@
-(function() {
-  window.Osteo = {
-    TEMPLATES:    {},
-    TRANSLATIONS: {},
-    VERSION:      "0.2.0"
-  };
-})();
+;(function(window, undefined) {
+ "use strict";window.Osteo = {
+  TEMPLATES:    {},
+  TRANSLATIONS: {},
+  VERSION:      "0.2.0"
+};
 
-(function() {
-  Osteo.Cache = function() {
-    this.cache = {};
-  };
+Osteo.Cache = function() {
+  this.cache = {};
+};
 
-  Osteo.Cache.prototype = {
-    add: function(object) {
-      if (object.model) {
-        this.cache[object.model.cid] = object;
-      }
-
-      this.cache[object.cid] = object;
-    },
-
-    get: function(objOrCid) {
-      if (objOrCid.cid) {
-        return this.cache[objOrCid.cid];
-      } else {
-        return this.cache[objOrCid];
-      }
-    },
-
-    remove: function(object) {
-      if (object.model !== undefined) {
-        delete(this.cache[object.model.cid]);
-      }
-
-      delete(this.cache[object.cid]);
-    },
-
-    cached: function() {
-      return _.uniq(_.values(this.cache));
+Osteo.Cache.prototype = {
+  add: function(object) {
+    if (object.model) {
+      this.cache[object.model.cid] = object;
     }
-  };
-})();
 
-(function() {
-  Osteo.Collection = Backbone.Collection.extend({
-    initialize: function(_models, options) {
-      if (!options) options = {};
+    this.cache[object.cid] = object;
+  },
 
-      this.root = options.root;
-    },
+  get: function(objOrCid) {
+    if (objOrCid.cid) {
+      return this.cache[objOrCid.cid];
+    } else {
+      return this.cache[objOrCid];
+    }
+  },
 
-    parse: function(response) {
-      if (this.root) {
-        this.associateRelations(response, this.root);
-        return response[this.root];
-      } else {
-        return response;
+  remove: function(object) {
+    if (object.model !== undefined) {
+      delete(this.cache[object.model.cid]);
+    }
+
+    delete(this.cache[object.cid]);
+  },
+
+  cached: function() {
+    return _.uniq(_.values(this.cache));
+  }
+};
+
+Osteo.Collection = Backbone.Collection.extend({
+  initialize: function(_models, options) {
+    if (!options) options = {};
+
+    this.root = options.root;
+  },
+
+  parse: function(response) {
+    if (this.root) {
+      this.associateRelations(response, this.root);
+      return response[this.root];
+    } else {
+      return response;
+    }
+  },
+
+  toPresenters: function(presenter) {
+    if (!presenter) presenter = Osteo.Presenter;
+
+    return this.map(function(model) {
+      return new presenter(model);
+    });
+  },
+
+  associateRelations: function(response, root) {
+    return Osteo.Sideload.associate(response, root);
+  }
+});
+
+Osteo.Model = Backbone.Model.extend({
+  defaultAutoSaveDelay: 500,
+
+  relations: {},
+
+  constructor: function(attributes) {
+    for (var rel in this.relations) {
+      var data = attributes[rel],
+          coll = this.relations[rel];
+
+      this[rel] = new coll(data);
+
+      delete attributes[rel];
+    }
+
+    Backbone.Model.apply(this, arguments);
+  },
+
+  initialize: function() {
+    this.autoSaveDelay = this.defaultAutoSaveDelay;
+  },
+
+  autoSave: function() {
+    if (!this.debouncedSave) {
+      this.debouncedSave = _.debounce(this.save, this.autoSaveDelay);
+    }
+
+    this.debouncedSave();
+
+    return true;
+  }
+});
+
+Osteo.Presenter = function(model) {
+  this.model = model;
+  this.model.on("change", this.replicate, this);
+
+  this.replicate(model);
+};
+
+Osteo.Presenter.prototype = {
+  get: function(key) {
+    return this.model.get(key);
+  },
+
+  replicate: function(model) {
+    var changed = _.isEmpty(model.changed) ? model.attributes : model.changed;
+
+    for (var key in changed) {
+      if (!_.isFunction(this[key])) this[key] = changed[key];
+    }
+  }
+};
+
+Osteo.View = Backbone.View.extend({
+  lazyRenderDelay: 50,
+
+  initialize: function(options) {
+    this.options = options || {};
+    this.lazyRenderDelay = options.lazyRenderDelay || this.lazyRenderDelay;
+
+    if (options.presenter) this.presenter = options.presenter;
+    if (options.template)  this.template  = options.template;
+
+    if (options.disableBoundRendering !== true) {
+      Osteo.BoundRenderer.extend(this);
+    }
+  },
+
+  isRendered: function() {
+    return !!this._rendered;
+  },
+
+  afterRender: function() {
+  },
+
+  bindEvents: function() {
+    return this;
+  },
+
+  unbindEvents: function() {
+    this.undelegateEvents();
+
+    return this;
+  },
+
+  render: function() {
+    this._rendered = true;
+
+    if (this.template) {
+      this.$el.html(this.renderTemplate(this.template, this.renderContext()));
+    }
+
+    this.afterRender.call(this);
+
+    return this;
+  },
+
+  lazyRender: function() {
+    if (!this.debouncedRender) {
+      this.debouncedRender = _.debounce(this.render, this.lazyRenderDelay);
+    }
+
+    this.debouncedRender();
+
+    return this;
+  },
+
+  renderTemplate: function(template, context) {
+    return this._lookupTemplate(template)(context);
+  },
+
+  renderContext: function() {
+    if (this.presenter) {
+      return this.presenter;
+    } else if (this.model) {
+      return this.model.attributes;
+    } else {
+      return {};
+    }
+  },
+
+  show: function() {
+    if (!this.isRendered()) this.render();
+
+    this.$el.removeClass("hide");
+
+    return this;
+  },
+
+  hide: function() {
+    if (this.isRendered()) this.$el.addClass("hide");
+
+    return this;
+  },
+
+  destroy: function(options) {
+    this.hide();
+    this.unbindEvents();
+    this.remove();
+
+    if (options && options.complete) {
+      this.model.destroy();
+    }
+
+    return this;
+  },
+
+  _lookupTemplate: function(template) {
+    var resolved = Osteo.TEMPLATES[template];
+
+    if (!resolved) throw new Error("No such template: " + template);
+
+    return resolved;
+  }
+});
+
+Osteo.I18n = {
+  pattern: /%\{(.+?)\}/g,
+
+  lookup: function(path, options) {
+    var hash = options ? (options.hash || options) : {};
+
+    var buff = _.reduce(path.split("."), function(trans, key) {
+      return trans[key];
+    }, Osteo.TRANSLATIONS);
+
+    return buff.replace(Osteo.I18n.pattern, function(match, capture) {
+      return hash[capture];
+    });
+  }
+};
+
+Osteo.Sideload = {
+  idKeys: function(object, root) {
+    var keys = {};
+
+    for (var key in object) {
+      if (key !== root) {
+        keys[key] = this.singularize(key) + "_ids";
       }
-    },
+    }
 
-    toPresenters: function(presenter) {
-      if (!presenter) presenter = Osteo.Presenter;
+    return keys;
+  },
 
-      return this.map(function(model) {
-        return new presenter(model);
+  associate: function(payload, root) {
+    var idKeys = this.idKeys(payload, root),
+        finder = this.findRelations;
+
+    return _.map(payload[root], function(object) {
+      for (var key in idKeys) {
+        object[key] = finder(payload[key], object[idKeys[key]]);
+      }
+
+      return object;
+    });
+  },
+
+  findRelations: function(array, ids) {
+    return _.map(ids, function(id) {
+      return _.find(array, function(object) {
+        return object.id === id;
       });
-    },
+    });
+  },
 
-    associateRelations: function(response, root) {
-      return Osteo.Sideload.associate(response, root);
+  singularize: function(word) {
+    return word.replace(/s$/, "");
+  }
+};
+
+Osteo.BoundRenderer = {
+  extend: function(view) {
+    view.boundRender   = this.boundRender;
+    view.boundElements = {};
+
+    if (view.model && view.model.on) {
+      view.listenTo(view.model, "change", view.boundRender);
     }
-  });
-})();
+  },
 
-(function() {
-  Osteo.Model = Backbone.Model.extend({
-    defaultAutoSaveDelay: 500,
+  boundRender: function(model) {
+    var $element, value;
 
-    relations: {},
-
-    constructor: function(attributes) {
-      for (var rel in this.relations) {
-        var data = attributes[rel],
-            coll = this.relations[rel];
-
-        this[rel] = new coll(data);
-
-        delete attributes[rel];
+    for (var key in model.changed) {
+      if (this.boundElements[key]) {
+        $element = this.boundElements[key];
+      } else {
+        $element = this.$("[data-bind=" + key + "]");
+        this.boundElements[key] = $element;
       }
 
-      Backbone.Model.apply(this, arguments);
-    },
-
-    initialize: function() {
-      this.autoSaveDelay = this.defaultAutoSaveDelay;
-    },
-
-    autoSave: function() {
-      if (!this.debouncedSave) {
-        this.debouncedSave = _.debounce(this.save, this.autoSaveDelay);
-      }
-
-      this.debouncedSave();
-
-      return true;
-    }
-  });
-})();
-
-(function() {
-  Osteo.Presenter = function(model) {
-    this.model = model;
-    this.model.on("change", this.replicate, this);
-
-    this.replicate(model);
-  };
-
-  Osteo.Presenter.prototype = {
-    get: function(key) {
-      return this.model.get(key);
-    },
-
-    replicate: function(model) {
-      var changed = _.isEmpty(model.changed) ? model.attributes : model.changed;
-
-      for (var key in changed) {
-        if (!_.isFunction(this[key])) this[key] = changed[key];
-      }
-    }
-  };
-})();
-
-(function() {
-  Osteo.View = Backbone.View.extend({
-    lazyRenderDelay: 50,
-
-    initialize: function(options) {
-      this.options = options || {};
-      this.lazyRenderDelay = options.lazyRenderDelay || this.lazyRenderDelay;
-
-      if (options.presenter) this.presenter = options.presenter;
-      if (options.template)  this.template  = options.template;
-
-      if (options.disableBoundRendering !== true) {
-        Osteo.BoundRenderer.extend(this);
-      }
-    },
-
-    isRendered: function() {
-      return !!this._rendered;
-    },
-
-    afterRender: function() {
-    },
-
-    bindEvents: function() {
-      return this;
-    },
-
-    unbindEvents: function() {
-      this.undelegateEvents();
-
-      return this;
-    },
-
-    render: function() {
-      this._rendered = true;
-
-      if (this.template) {
-        this.$el.html(this.renderTemplate(this.template, this.renderContext()));
-      }
-
-      this.afterRender.call(this);
-
-      return this;
-    },
-
-    lazyRender: function() {
-      if (!this.debouncedRender) {
-        this.debouncedRender = _.debounce(this.render, this.lazyRenderDelay);
-      }
-
-      this.debouncedRender();
-
-      return this;
-    },
-
-    renderTemplate: function(template, context) {
-      return this._lookupTemplate(template)(context);
-    },
-
-    renderContext: function() {
       if (this.presenter) {
-        return this.presenter;
-      } else if (this.model) {
-        return this.model.attributes;
+        value = this.presenter[key];
       } else {
-        return {};
-      }
-    },
-
-    show: function() {
-      if (!this.isRendered()) this.render();
-
-      this.$el.removeClass("hide");
-
-      return this;
-    },
-
-    hide: function() {
-      if (this.isRendered()) this.$el.addClass("hide");
-
-      return this;
-    },
-
-    destroy: function(options) {
-      this.hide();
-      this.unbindEvents();
-      this.remove();
-
-      if (options && options.complete) {
-        this.model.destroy();
+        value = model.changed[key];
       }
 
-      return this;
-    },
-
-    _lookupTemplate: function(template) {
-      var resolved = Osteo.TEMPLATES[template];
-
-      if (!resolved) throw new Error("No such template: " + template);
-
-      return resolved;
+      if ($element.length) $element.text(value);
     }
-  });
-})();
+  }
+};
 
-(function() {
-  Osteo.I18n = {
-    pattern: /%\{(.+?)\}/g,
+Osteo.CollectionView = Osteo.View.extend({
+  viewClass: Osteo.View,
 
-    lookup: function(path, options) {
-      var hash = options ? (options.hash || options) : {};
+  initialize: function(options) {
+    Osteo.View.prototype.initialize.call(this, options);
 
-      var buff = _.reduce(path.split("."), function(trans, key) {
-        return trans[key];
-      }, Osteo.TRANSLATIONS);
+    if (options.selector)  this.selector  = options.selector;
+    if (options.viewClass) this.viewClass = options.viewClass;
 
-      return buff.replace(Osteo.I18n.pattern, function(match, capture) {
-        return hash[capture];
-      });
+    if (this.collection) {
+      this.listenTo(this.collection, "add",     this.addView);
+      this.listenTo(this.collection, "destroy", this.modelDestroyed);
+      this.listenTo(this.collection, "reset",   this.reset);
+      this.listenTo(this.collection, "sort",    this.sort);
     }
-  };
-})();
 
-(function() {
-  Osteo.Sideload = {
-    idKeys: function(object, root) {
-      var keys = {};
+    this.viewCache = new Osteo.Cache();
+  },
 
-      for (var key in object) {
-        if (key !== root) {
-          keys[key] = this.singularize(key) + "_ids";
-        }
-      }
-
-      return keys;
-    },
-
-    associate: function(payload, root) {
-      var idKeys = this.idKeys(payload, root),
-          finder = this.findRelations;
-
-      return _.map(payload[root], function(object) {
-        for (var key in idKeys) {
-          object[key] = finder(payload[key], object[idKeys[key]]);
-        }
-
-        return object;
-      });
-    },
-
-    findRelations: function(array, ids) {
-      return _.map(ids, function(id) {
-        return _.find(array, function(object) {
-          return object.id === id;
-        });
-      });
-    },
-
-    singularize: function(word) {
-      return word.replace(/s$/, "");
-    }
-  };
-})();
-
-(function() {
-  Osteo.BoundRenderer = {
-    extend: function(view) {
-      view.boundRender   = this.boundRender;
-      view.boundElements = {};
-
-      if (view.model && view.model.on) {
-        view.listenTo(view.model, "change", view.boundRender);
-      }
-    },
-
-    boundRender: function(model) {
-      var $element, value;
-
-      for (var key in model.changed) {
-        if (this.boundElements[key]) {
-          $element = this.boundElements[key];
-        } else {
-          $element = this.$("[data-bind=" + key + "]");
-          this.boundElements[key] = $element;
-        }
-
-        if (this.presenter) {
-          value = this.presenter[key];
-        } else {
-          value = model.changed[key];
-        }
-
-        if ($element.length) $element.text(value);
-      }
-    }
-  };
-})();
-
-(function() {
-  Osteo.CollectionView = Osteo.View.extend({
-    viewClass: Osteo.View,
-
-    initialize: function(options) {
-      Osteo.View.prototype.initialize.call(this, options);
-
-      if (options.selector)  this.selector  = options.selector;
-      if (options.viewClass) this.viewClass = options.viewClass;
-
-      if (this.collection) {
-        this.listenTo(this.collection, "add",     this.addView);
-        this.listenTo(this.collection, "destroy", this.modelDestroyed);
-        this.listenTo(this.collection, "reset",   this.reset);
-        this.listenTo(this.collection, "sort",    this.sort);
-      }
-
-      this.viewCache = new Osteo.Cache();
-    },
-
-    container: function() {
-      if (!this._container) {
-        if (this.selector) {
-          this._container = this.$(this.selector);
-        } else {
-          this._container = this.$el;
-        }
-      }
-
-      return this._container;
-    },
-
-    addView: function(model, collection) {
-      var view  = this.getView(model).show(),
-          index = this.collection.indexOf(model),
-          exModel, exView;
-
-      if (index === 0) {
-        this.container().prepend(view.$el);
+  container: function() {
+    if (!this._container) {
+      if (this.selector) {
+        this._container = this.$(this.selector);
       } else {
-        exModel = collection.at(index - 1);
-        exView  = this.getView(exModel);
-
-        exView.$el.after(view.$el);
+        this._container = this.$el;
       }
-    },
-
-    appendView: function(model) {
-      var $elem = this.getView(model).show().$el;
-
-      this.container().append($elem);
-    },
-
-    getView: function(model) {
-      var view = this.viewCache.get(model);
-
-      if (!view) {
-        view = new this.viewClass({ model: model });
-        this.viewCache.add(view);
-      }
-
-      return view;
-    },
-
-    render: function() {
-      Osteo.View.prototype.render.call(this);
-      this.reset();
-
-      return this;
-    },
-
-    renderContext: function() {
-      return this.collection;
-    },
-
-    reset: function() {
-      this.container().empty();
-      this.collection.each(this.appendView, this);
-
-      return this;
-    },
-
-    sort: function() {
-      var $container = this.container(),
-          viewCache  = this.viewCache;
-
-      _.each(this.viewCache.cached(), function(view) {
-        view.$el.detach();
-      });
-
-      this.collection.each(function(model) {
-        $container.append(viewCache.get(model).$el);
-      });
-    },
-
-    modelDestroyed: function(model) {
-      var view = this.getView(model);
-      this.viewCache.remove(model);
-      view.destroy();
     }
-  });
-})();
 
-(function() {
-  Osteo.ModalView = Osteo.View.extend({
-    className:      "osteo-modal js-osteo-modal",
-    rootSelector:   "body",
-    screenTemplate: "<div class='osteo-screen js-osteo-screen'></div>",
+    return this._container;
+  },
 
-    events: {
-      "click .js-cancel" : "cancel",
-      "click .js-return" : "cancel"
-    },
+  addView: function(model, collection) {
+    var view  = this.getView(model).show(),
+        index = this.collection.indexOf(model),
+        exModel, exView;
 
-    display: function(options) {
-      if (!options) options = {};
+    if (index === 0) {
+      this.container().prepend(view.$el);
+    } else {
+      exModel = collection.at(index - 1);
+      exView  = this.getView(exModel);
 
-      this.model      = options.model;
-      this.presenter  = options.presenter;
-      this.collection = options.collection;
-
-      this.render();
-      this.open();
-
-      return this;
-    },
-
-    open: function() {
-      this.appendBody();
-      this.appendScreen();
-    },
-
-    cancel: function() {
-      this.hide();
-      this.hideScreen();
-
-      return false;
-    },
-
-    hideScreen: function() {
-      if (this.$screen) {
-        this.$screen.addClass("hide");
-      }
-    },
-
-    appendBody: function() {
-      this.$el.appendTo(this.rootSelector).removeClass("hide");
-    },
-
-    appendScreen: function() {
-      if (!this.$screen) {
-        this.$screen = $(this.screenTemplate);
-      }
-
-      this.$screen
-        .appendTo(this.rootSelector)
-        .off("click.osteo")
-        .on("click.osteo", this.cancel)
-        .removeClass("hide");
+      exView.$el.after(view.$el);
     }
-  });
-})();
+  },
+
+  appendView: function(model) {
+    var $elem = this.getView(model).show().$el;
+
+    this.container().append($elem);
+  },
+
+  getView: function(model) {
+    var view = this.viewCache.get(model);
+
+    if (!view) {
+      view = new this.viewClass({ model: model });
+      this.viewCache.add(view);
+    }
+
+    return view;
+  },
+
+  render: function() {
+    Osteo.View.prototype.render.call(this);
+    this.reset();
+
+    return this;
+  },
+
+  renderContext: function() {
+    return this.collection;
+  },
+
+  reset: function() {
+    this.container().empty();
+    this.collection.each(this.appendView, this);
+
+    return this;
+  },
+
+  sort: function() {
+    var $container = this.container(),
+        viewCache  = this.viewCache;
+
+    _.each(this.viewCache.cached(), function(view) {
+      view.$el.detach();
+    });
+
+    this.collection.each(function(model) {
+      $container.append(viewCache.get(model).$el);
+    });
+  },
+
+  modelDestroyed: function(model) {
+    var view = this.getView(model);
+    this.viewCache.remove(model);
+    view.destroy();
+  }
+});
+
+Osteo.ModalView = Osteo.View.extend({
+  className:      "osteo-modal js-osteo-modal",
+  rootSelector:   "body",
+  screenTemplate: "<div class='osteo-screen js-osteo-screen'></div>",
+
+  events: {
+    "click .js-cancel" : "cancel",
+    "click .js-return" : "cancel"
+  },
+
+  display: function(options) {
+    if (!options) options = {};
+
+    this.model      = options.model;
+    this.presenter  = options.presenter;
+    this.collection = options.collection;
+
+    this.render();
+    this.open();
+
+    return this;
+  },
+
+  open: function() {
+    this.appendBody();
+    this.appendScreen();
+  },
+
+  cancel: function() {
+    this.hide();
+    this.hideScreen();
+
+    return false;
+  },
+
+  hideScreen: function() {
+    if (this.$screen) {
+      this.$screen.addClass("hide");
+    }
+  },
+
+  appendBody: function() {
+    this.$el.appendTo(this.rootSelector).removeClass("hide");
+  },
+
+  appendScreen: function() {
+    if (!this.$screen) {
+      this.$screen = $(this.screenTemplate);
+    }
+
+    this.$screen
+      .appendTo(this.rootSelector)
+      .off("click.osteo")
+      .on("click.osteo", this.cancel)
+      .removeClass("hide");
+  }
+});
+}(window));

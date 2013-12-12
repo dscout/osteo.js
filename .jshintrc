@@ -1,8 +1,10 @@
 {
   "browser": true,
+  "camelcase": true,
   "eqeqeq": true,
   "immed": true,
   "latedef": true,
+  "newcap": false,
   "noarg": true,
   "quotmark": "double",
   "trailing": true,

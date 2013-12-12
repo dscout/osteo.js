@@ -3,7 +3,11 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         src: ['lib/osteo.js', 'lib/*.js', 'lib/**/*.js'],
-        dest: 'osteo.js'
+        dest: 'osteo.js',
+        options: {
+          banner: ";(function(window, undefined) {\n \"use strict\";",
+          footer: "}(window));"
+        }
       }
     },
 

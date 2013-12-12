@@ -3,7 +3,7 @@
 window.Osteo = {
   TEMPLATES:    {},
   TRANSLATIONS: {},
-  VERSION:      "0.2.0"
+  VERSION:      "0.3.0"
 };
 
 Osteo.Cache = function() {

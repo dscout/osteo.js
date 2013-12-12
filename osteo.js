@@ -52,6 +52,7 @@
 
     parse: function(response) {
       if (this.root) {
+        this.associateRelations(response, this.root);
         return response[this.root];
       } else {
         return response;
@@ -64,6 +65,10 @@
       return this.map(function(model) {
         return new presenter(model);
       });
+    },
+
+    associateRelations: function(response, root) {
+      return Osteo.Sideload.associate(response, root);
     }
   });
 })();
@@ -71,6 +76,21 @@
 (function() {
   Osteo.Model = Backbone.Model.extend({
     defaultAutoSaveDelay: 500,
+
+    relations: {},
+
+    constructor: function(attributes) {
+      for (var rel in this.relations) {
+        var data = attributes[rel],
+            coll = this.relations[rel];
+
+        this[rel] = new coll(data);
+
+        delete attributes[rel];
+      }
+
+      Backbone.Model.apply(this, arguments);
+    },
 
     initialize: function() {
       this.autoSaveDelay = this.defaultAutoSaveDelay;
@@ -86,7 +106,7 @@
       return true;
     }
   });
-})(this);
+})();
 
 (function() {
   Osteo.Presenter = function(model) {
@@ -230,6 +250,47 @@
       return buff.replace(Osteo.I18n.pattern, function(match, capture) {
         return hash[capture];
       });
+    }
+  };
+})();
+
+(function() {
+  Osteo.Sideload = {
+    idKeys: function(object, root) {
+      var keys = {};
+
+      for (var key in object) {
+        if (key !== root) {
+          keys[key] = this.singularize(key) + "_ids";
+        }
+      }
+
+      return keys;
+    },
+
+    associate: function(payload, root) {
+      var idKeys = this.idKeys(payload, root),
+          finder = this.findRelations;
+
+      return _.map(payload[root], function(object) {
+        for (var key in idKeys) {
+          object[key] = finder(payload[key], object[idKeys[key]]);
+        }
+
+        return object;
+      });
+    },
+
+    findRelations: function(array, ids) {
+      return _.map(ids, function(id) {
+        return _.find(array, function(object) {
+          return object.id === id;
+        });
+      });
+    },
+
+    singularize: function(word) {
+      return word.replace(/s$/, "");
     }
   };
 })();

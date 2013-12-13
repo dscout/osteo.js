@@ -18,14 +18,16 @@ describe('Osteo.View', function() {
       expect(view.render()).to.eql(view);
     });
 
-    it('calls the afterRender hook', function() {
+    it('calls render hooks', function() {
       var spy;
 
       view = new Osteo.View({});
-      spy = view.afterRender = sinon.spy();
+      sinon.spy(view, 'beforeRender');
+      sinon.spy(view, 'afterRender');
 
       view.render();
 
+      expect(view.beforeRender.called).to.be.true;
       expect(view.afterRender.called).to.be.true;
     });
   });

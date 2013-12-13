@@ -42,7 +42,7 @@ Osteo.Cache.prototype = {
 
 Osteo.Collection = Backbone.Collection.extend({
   initialize: function(_models, options) {
-    if (!options) options = {};
+    options = options || {};
 
     this.root = options.root;
   },
@@ -175,6 +175,9 @@ Osteo.View = Backbone.View.extend({
     return !!this._rendered;
   },
 
+  beforeRender: function() {
+  },
+
   afterRender: function() {
   },
 
@@ -189,6 +192,8 @@ Osteo.View = Backbone.View.extend({
   },
 
   render: function() {
+    this.beforeRender.call(this);
+
     this._rendered = true;
 
     if (this.template) {

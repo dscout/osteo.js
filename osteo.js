@@ -397,12 +397,6 @@ Osteo.CollectionView = Osteo.View.extend({
     }
   },
 
-  appendView: function(model) {
-    var $elem = this.getView(model).show().$el;
-
-    this.container().append($elem);
-  },
-
   getView: function(model) {
     var view = this.viewCache.get(model);
 
@@ -426,8 +420,11 @@ Osteo.CollectionView = Osteo.View.extend({
   },
 
   reset: function() {
-    this.container().empty();
-    this.collection.each(this.appendView, this);
+    var $elements = this.collection.map(function(model) {
+      return this.getView(model).show().$el;
+    }, this);
+
+    this.container().html($elements);
 
     return this;
   },

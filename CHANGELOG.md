@@ -2,6 +2,7 @@
 
 * Provide a `beforeRender` hook during view rendering.
 * Batched collection reset rendering for performance.
+* Routing `pathFor` and `visit` methods. Makes navigation much more convenient.
 * Fix: View options didn't default to `{}`.
 
 ## v0.3.0 (2013-12-12)

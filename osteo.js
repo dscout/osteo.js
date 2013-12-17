@@ -153,6 +153,25 @@ Osteo.Router = Backbone.Router.extend({
     }
 
     return route;
+  },
+
+  pathFor: function(name, context) {
+    var inverted = _.invert(this.routes),
+        path     = inverted[name];
+
+    context = context ? context.attributes || context : {};
+
+    if (!path) throw new Error("No such path name: " + name);
+
+    return path.replace(/:(.+?)(\/|$)/g, function(match, sub, term) {
+      return context[sub] + term;
+    });
+  },
+
+  visit: function(name, context) {
+    var path = this.pathFor(name, context);
+
+    this.navigate(path, { trigger: true });
   }
 });
 

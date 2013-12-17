@@ -25,4 +25,64 @@ describe('Osteo.Router', function() {
       expect(router.routeCache).to.eql({});
     });
   });
+
+  describe('#pathFor', function() {
+    it('resolves the full path by name', function() {
+      var router = new Osteo.Router();
+
+      router.routes = { 'help/section' : 'help' };
+
+      expect(router.pathFor('help')).to.eq('help/section');
+    });
+
+    it('interpolates param parts of the path', function() {
+      var router = new Osteo.Router(),
+          context = { page: 'osteo', id: 100 };
+
+      router.routes = { 'help/:page/sub/:id' : 'help' };
+
+      expect(router.pathFor('help', context))
+        .to.eq('help/osteo/sub/100');
+    });
+
+    it('replaces from the context attributes', function() {
+      var router = new Osteo.Router(),
+          context = { attributes: { page: 'osteo' } };
+
+      router.routes = { 'help/:page' : 'help' };
+
+      expect(router.pathFor('help', context))
+        .to.eq('help/osteo');
+    });
+
+    it('raises an exception for an unknown path', function() {
+      var router = new Osteo.Router(),
+          fn = function() { router.pathFor('help'); };
+
+      expect(fn).to.throw('No such path name: help');
+    });
+  });
+
+  describe('#visit', function() {
+    var router;
+
+    beforeEach(function() {
+      Backbone.history.start({ silent: true, pushState: false });
+
+      router = new Osteo.Router({ routes: { 'help' : 'help' } });
+    });
+
+    afterEach(function() {
+      router.navigate('/');
+    });
+
+    it('navigates to the named path', function() {
+      var handler = sinon.spy();
+
+      router.on('route:help', handler);
+      router.visit('help');
+
+      expect(handler.called).to.be.true;
+    });
+  });
 });

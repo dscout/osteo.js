@@ -1,9 +1,13 @@
-## Unreleased
+## v0.4.0 (2013-12-18)
 
 * Provide a `beforeRender` hook during view rendering.
 * Batched collection reset rendering for performance.
 * Routing `pathFor` and `visit` methods. Makes navigation much more convenient.
 * Fix: View options didn't default to `{}`.
+* Factor model relation loading out of the constructor.
+* Allow object or function route handlers.
+* Automatic route unloading.
+* All routes are treated as singletons.
 
 ## v0.3.0 (2013-12-12)
 

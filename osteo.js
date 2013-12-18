@@ -137,14 +137,6 @@ Osteo.Presenter.prototype = {
 Osteo.Route = function() {
 };
 
-Osteo.Route.instance = function() {
-  if (!this._instance) {
-    this._instance = new this();
-  }
-
-  return this._instance;
-};
-
 Osteo.Route.prototype = {
   load: function() {
     return this;
@@ -199,8 +191,11 @@ Osteo.Router = Backbone.Router.extend({
   },
 
   _getRouteInstance: function(handler) {
+    var route;
+
     if (!handler.instance) {
-      handler.instance = function() { return new handler(); };
+      route = new handler();
+      handler.instance = function() { return route; };
     }
 
     return handler.instance();

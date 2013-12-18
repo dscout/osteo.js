@@ -32,7 +32,6 @@ describe('Osteo.Router', function() {
           fn     = function() { router.handle('fake'); };
 
       expect(fn).not.to.throw(Error);
-      expect(router.routeCache).to.eql({});
     });
   });
 

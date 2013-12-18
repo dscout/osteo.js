@@ -137,8 +137,20 @@ Osteo.Presenter.prototype = {
 Osteo.Route = function() {
 };
 
+Osteo.Route.instance = function() {
+  if (!this._instance) {
+    this._instance = new this();
+  }
+
+  return this._instance;
+};
+
 Osteo.Route.prototype = {
   load: function() {
+    return this;
+  },
+
+  unload: function() {
     return this;
   }
 };
@@ -147,8 +159,6 @@ Osteo.Router = Backbone.Router.extend({
   handlers: {},
 
   initialize: function() {
-    this.routeCache = {};
-
     this.on("route", this.handle, this);
   },
 
@@ -160,10 +170,8 @@ Osteo.Router = Backbone.Router.extend({
     if (this.lastRoute) this.lastRoute.unload();
 
     if (handler) {
-      route = this.routeCache[name] || new handler();
+      route = this._getRouteInstance(handler);
       route.load(params);
-
-      this.routeCache[name] = route;
     }
 
     this.lastRoute = route;
@@ -188,6 +196,14 @@ Osteo.Router = Backbone.Router.extend({
     var path = this.pathFor(name, context);
 
     this.navigate(path, { trigger: true });
+  },
+
+  _getRouteInstance: function(handler) {
+    if (!handler.instance) {
+      handler.instance = function() { return new handler(); };
+    }
+
+    return handler.instance();
   }
 });
 

@@ -144,7 +144,7 @@ Osteo.Route.prototype = {
 };
 
 Osteo.Router = Backbone.Router.extend({
-  handlers: function() { return {}; },
+  handlers: {},
 
   initialize: function() {
     this.routeCache = {};
@@ -153,7 +153,8 @@ Osteo.Router = Backbone.Router.extend({
   },
 
   handle: function(name, params) {
-    var handler = this.handlers()[name],
+    var handlers = _.isFunction(this.handlers) ? this.handlers() : this.handlers,
+        handler  = handlers[name],
         route;
 
     if (handler) {

@@ -7,9 +7,7 @@ describe('Osteo.Router', function() {
             this.load = sinon.spy();
           };
 
-      router.handlers = function() {
-        return { 'help' : HelpRoute };
-      }
+      router.handlers = { 'help' : HelpRoute };
 
       var route = router.handle('help', 1);
 

@@ -2,10 +2,7 @@ describe('Osteo.Router', function() {
   describe('#handle', function() {
     it('loads the route with the associated name', function() {
       var router    = new Osteo.Router(),
-          HelpRoute = function(id) {
-            this.id = id;
-            this.load = sinon.spy();
-          };
+          HelpRoute = function() { this.load = sinon.spy(); };
 
       router.handlers = { 'help' : HelpRoute };
 
@@ -13,6 +10,21 @@ describe('Osteo.Router', function() {
 
       expect(route).to.be.instanceof(HelpRoute);
       expect(route.load.called).to.be.true;
+    });
+
+    it('unloads the previous route', function() {
+      var router = new Osteo.Router(),
+          HelpRoute = function() {
+            this.load   = sinon.spy();
+            this.unload = sinon.spy();
+          },
+          route;
+
+      router.handlers = { 'help' : HelpRoute };
+      route = router.handle('help');
+      router.handle('other');
+
+      expect(route.unload.called).to.be.true;
     });
 
     it('does not load unhandled routes', function() {

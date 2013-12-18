@@ -75,14 +75,7 @@ Osteo.Model = Backbone.Model.extend({
   relations: {},
 
   constructor: function(attributes) {
-    for (var rel in this.relations) {
-      var data = attributes[rel],
-          coll = this.relations[rel];
-
-      this[rel] = new coll(data);
-
-      delete attributes[rel];
-    }
+    this.attachRelations(attributes);
 
     Backbone.Model.apply(this, arguments);
   },
@@ -99,6 +92,24 @@ Osteo.Model = Backbone.Model.extend({
     this.debouncedSave();
 
     return true;
+  },
+
+  attachRelations: function(attributes) {
+    var relations = this.relations,
+        data, collection;
+
+    if (_.isFunction(relations)) relations = relations();
+
+    for (var rel in relations) {
+      data = attributes[rel];
+      collection = relations[rel];
+
+      this[rel] = new collection(data);
+
+      delete attributes[rel];
+    }
+
+    return attributes;
   }
 });
 

@@ -14,9 +14,11 @@ describe('Osteo.Model', function() {
   describe('#relations', function() {
     it('maps defined relational attributes', function() {
       var Post = Osteo.Model.extend({
-        relations: {
-          'tags'     : Backbone.Collection,
-          'comments' : Backbone.Collection
+        relations: function() {
+          return {
+            'tags'     : Backbone.Collection,
+            'comments' : Backbone.Collection
+          }
         }
       });
 

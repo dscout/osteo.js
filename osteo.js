@@ -340,10 +340,13 @@ Osteo.Sideload = {
   },
 
   associate: function(payload, root) {
-    var idKeys = this.idKeys(payload, root),
-        finder = this.findRelations;
+    var idKeys  = this.idKeys(payload, root),
+        finder  = this.findRelations,
+        rootObj = payload[root];
 
-    return _.map(payload[root], function(object) {
+    if (!_.isArray(rootObj)) rootObj = [rootObj];
+
+    return _.map(rootObj, function(object) {
       for (var key in idKeys) {
         object[key] = finder(payload[key], object[idKeys[key]]);
       }

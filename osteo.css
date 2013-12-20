@@ -1,16 +1,16 @@
-.osteo-screen {
+.modal-screen {
   background: black;
   bottom: 0;
   display: none;
   left: 0;
   opacity: 0.75;
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
   z-index: 9997;
 }
 
-.osteo-modal {
+.modal-view {
   background: #fff;
   border-radius: 20px;
   bottom: 0;
@@ -19,7 +19,7 @@
   left: 0;
   margin: auto;
   padding: 20px;
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
   width: 600px;

@@ -494,13 +494,12 @@ Osteo.CollectionView = Osteo.View.extend({
 });
 
 Osteo.ModalView = Osteo.View.extend({
-  className:      "osteo-modal js-osteo-modal",
+  className:      "modal-view js-osteo-modal",
   rootSelector:   "body",
-  screenTemplate: "<div class='osteo-screen js-osteo-screen'></div>",
+  screenTemplate: "<div class='modal-screen js-osteo-screen'></div>",
 
   events: {
     "click .js-cancel" : "cancel",
-    "click .js-return" : "cancel"
   },
 
   display: function(options) {

@@ -246,7 +246,7 @@ Osteo.View = Backbone.View.extend({
       this.$el.html(this.renderTemplate(this.template, this.renderContext()));
     }
 
-    this.afterRender.call(this);
+    _.defer(_.bind(this.afterRender, this));
 
     return this;
   },

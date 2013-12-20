@@ -26,17 +26,6 @@ describe('Osteo.CollectionView', function() {
     });
   });
 
-  describe('#render', function() {
-    it('renders and appends every model in the collection', function() {
-      var collection = new Backbone.Collection([{ id: 1 }, { id: 2 }]),
-          view       = new Osteo.CollectionView({ collection: collection });
-
-      view.render();
-
-      expect(view.$el.children().length).to.eq(2);
-    });
-  });
-
   describe('#renderContext', function() {
     it('sets the context to the collection', function() {
       var coll = new Backbone.Collection(),
@@ -51,7 +40,7 @@ describe('Osteo.CollectionView', function() {
       var coll = new Backbone.Collection([{ id: 20 }]),
           view = new Osteo.CollectionView({ collection: coll });
 
-      view.render();
+      view.reset();
       coll.add({ id: 30 });
 
       expect(view.$el.children().length).to.eq(2);
@@ -66,7 +55,7 @@ describe('Osteo.CollectionView', function() {
 
       coll.comparator = function(model) { return -model.id; }
 
-      view.render();
+      view.reset();
       oldFirst = view.$el.children().first();
 
       coll.sort();

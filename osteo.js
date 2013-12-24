@@ -217,6 +217,16 @@ Osteo.View = Backbone.View.extend({
     }
   },
 
+  context: function() {
+    if (this.presenter) {
+      return this.presenter;
+    } else if (this.model) {
+      return this.model.attributes;
+    } else {
+      return {};
+    }
+  },
+
   isRendered: function() {
     return !!this._rendered;
   },
@@ -243,7 +253,7 @@ Osteo.View = Backbone.View.extend({
     this._rendered = true;
 
     if (this.template) {
-      this.$el.html(this.renderTemplate(this.template, this.renderContext()));
+      this.$el.html(this.renderTemplate(this.template, this.context()));
     }
 
     _.defer(_.bind(this.afterRender, this));
@@ -263,16 +273,6 @@ Osteo.View = Backbone.View.extend({
 
   renderTemplate: function(template, context) {
     return this._lookupTemplate(template)(context);
-  },
-
-  renderContext: function() {
-    if (this.presenter) {
-      return this.presenter;
-    } else if (this.model) {
-      return this.model.attributes;
-    } else {
-      return {};
-    }
   },
 
   show: function() {

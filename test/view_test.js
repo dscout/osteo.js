@@ -67,25 +67,25 @@ describe('Osteo.View', function() {
     });
   });
 
-  describe('#renderContext', function() {
+  describe('#context', function() {
     it('defaults to an empty object', function() {
       view = new Osteo.View({});
 
-      expect(view.renderContext()).to.eql({});
+      expect(view.context()).to.eql({});
     });
 
     it('is the model attributes without a presenter', function() {
       var model = new Backbone.Model({ id: 100 }),
           view  = new Osteo.View({ model: model });
 
-      expect(view.renderContext()).to.eql({ id: 100 });
+      expect(view.context()).to.eql({ id: 100 });
     });
 
     it('is a passed presenter instance', function() {
       var presenter = { id: 100 },
           view = new Osteo.View({ model: {}, presenter: presenter });
 
-      expect(view.renderContext()).to.eql({ id: 100 });
+      expect(view.context()).to.eql({ id: 100 });
     });
   });
 

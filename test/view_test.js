@@ -104,8 +104,8 @@ describe('Osteo.View', function() {
   });
 
   describe('#boundRender', function() {
-    it('automatically includes bound rendering', function() {
-      view = new Osteo.View({ boundAttributes: ['title'] });
+    it('selectively enables bound rendering', function() {
+      view = new Osteo.View({ boundRendering: true });
 
       expect(view.boundRender).not.to.be.undefined;
     });

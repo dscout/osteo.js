@@ -74,16 +74,16 @@ describe('Osteo.View', function() {
       expect(view.context()).to.eql({});
     });
 
-    it('is the model attributes without a presenter', function() {
+    it('is the model attributes', function() {
       var model = new Backbone.Model({ id: 100 }),
           view  = new Osteo.View({ model: model });
 
       expect(view.context()).to.eql({ id: 100 });
     });
 
-    it('is a passed presenter instance', function() {
-      var presenter = { id: 100 },
-          view = new Osteo.View({ model: {}, presenter: presenter });
+    it('is a passed context function', function() {
+      var context = function() { return { id: 100 } },
+          view = new Osteo.View({ model: {}, context: context });
 
       expect(view.context()).to.eql({ id: 100 });
     });

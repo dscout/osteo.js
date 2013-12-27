@@ -15,10 +15,10 @@ describe('Osteo.ModalView', function() {
           pres  = { model: model },
           coll  = [model];
 
-      modal.display({ model: model, presenter: pres, collection: coll });
+      modal.display({ model: model, context: pres, collection: coll });
 
       expect(modal.model).to.eql(model);
-      expect(modal.presenter).to.eql(pres);
+      expect(modal.context).to.eql(pres);
       expect(modal.collection).to.eql(coll);
     });
   });

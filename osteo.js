@@ -131,6 +131,8 @@ Osteo.Presenter.prototype = {
     for (var key in changed) {
       if (!_.isFunction(this[key])) this[key] = changed[key];
     }
+
+    return true;
   }
 };
 
@@ -243,12 +245,16 @@ Osteo.View = Backbone.View.extend({
   },
 
   render: function() {
+    var context;
+
     this.beforeRender.call(this);
 
     this._rendered = true;
 
     if (this.template) {
-      this.$el.html(this.renderTemplate(this.template, this.context()));
+      context = _.isFunction(this.context) ? this.context.call(this) : this.context;
+
+      this.$el.html(this.renderTemplate(this.template, context));
     }
 
     _.defer(_.bind(this.afterRender, this));
@@ -502,9 +508,9 @@ Osteo.ModalView = Osteo.View.extend({
   display: function(options) {
     if (!options) options = {};
 
-    this.model      = options.model;
-    this.presenter  = options.presenter;
     this.collection = options.collection;
+    this.context    = options.context;
+    this.model      = options.model;
 
     this.render();
     this.open();

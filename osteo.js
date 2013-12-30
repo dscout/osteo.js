@@ -352,11 +352,13 @@ Osteo.I18n = {
 
 Osteo.Sideload = {
   idKeys: function(object, root) {
-    var keys = {};
+    var keys = {}, singular, suffix;
 
     for (var key in object) {
       if (key !== root) {
-        keys[key] = this.singularize(key) + "_ids";
+        singular = this.singularize(key);
+        suffix   = key !== singular ? "_ids" : "_id";
+        keys[key] = singular + suffix;
       }
     }
 
@@ -380,6 +382,8 @@ Osteo.Sideload = {
   },
 
   findRelations: function(array, ids) {
+    if (!_.isArray(array)) return array;
+
     return _.map(ids, function(id) {
       return _.find(array, function(object) {
         return object.id === id;

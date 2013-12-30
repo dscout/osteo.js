@@ -43,5 +43,18 @@ describe('Osteo.Sideload', function() {
       expect(associated.length).to.eq(1);
       expect(associated[0].tags).to.eql([{ id: 1 }, { id: 2 }]);
     });
+
+    it('associates a single object', function() {
+      var payload, associated;
+
+      payload = {
+        post:   { id: 1, author_id: 17 },
+        author: { id: 17 }
+      };
+
+      associated = Osteo.Sideload.associate(payload, 'post');
+
+      expect(associated[0].author).to.eql({ id: 17 });
+    });
   });
 });

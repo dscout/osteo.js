@@ -8,6 +8,16 @@ describe('Osteo.Collection', function() {
     });
   });
 
+  describe('.root', function() {
+    it('passes root options through to models', function() {
+      var collection = new Osteo.Collection([], { root: 'posts' });
+
+      model = collection.add({ posts: [{ id: 1 }]});
+
+      expect(model.root).to.eq('post');
+    });
+  });
+
   describe('#toPresenters', function() {
     it('generates an array of presenter wrapped models', function() {
       var collection = new Osteo.Collection([

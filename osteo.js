@@ -56,6 +56,19 @@ Osteo.Collection = Backbone.Collection.extend({
     }
   },
 
+  add: function() {
+    var singular, results;
+
+    results = Backbone.Collection.prototype.add.apply(this, arguments);
+
+    if (this.root) {
+      singular = Osteo.Sideload.singularize(this.root);
+      this.each(function(model) { model.root = singular; });
+    }
+
+    return results;
+  },
+
   toPresenters: function(presenter) {
     if (!presenter) presenter = Osteo.Presenter;
 

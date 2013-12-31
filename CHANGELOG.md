@@ -1,3 +1,16 @@
+## v0.5.0 (2013-12-31)
+
+* Handle model associations within `set` rather than the constructor.
+* Pass collection root settings through to model.
+* Consistent, generic handling of view context.
+* Simplify bound rendering for non-model objects.
+* Rename `renderContext` to simply `context`.
+* Generalize modal class naming.
+* Simplify modal `cancel` event handlers.
+* Defer afterRender hook until call stack clears.
+* Remove collection reset from render call.
+* Sideload improvements for single root and single associations.
+
 ## v0.4.0 (2013-12-18)
 
 * Provide a `beforeRender` hook during view rendering.

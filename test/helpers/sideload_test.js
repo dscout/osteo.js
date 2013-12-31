@@ -1,13 +1,4 @@
 describe('Osteo.Sideload', function() {
-  describe('.idKeys', function() {
-    it('converts pluralized keys into id keys', function() {
-      var object = { tags: null, comments: null };
-
-      expect(Osteo.Sideload.idKeys(object))
-        .to.eql({ tags: 'tag_ids', comments: 'comment_ids' });
-    });
-  });
-
   describe('.associate', function() {
     it('re-associates sideloaded objects with the root objects', function() {
       var payload, associated;
@@ -48,13 +39,13 @@ describe('Osteo.Sideload', function() {
       var payload, associated;
 
       payload = {
-        post:   { id: 1, author_id: 17 },
-        author: { id: 17 }
+        post:    { id: 1, author_id: 17 },
+        authors: [{ id: 17 }]
       };
 
       associated = Osteo.Sideload.associate(payload, 'post');
 
-      expect(associated[0].author).to.eql({ id: 17 });
+      expect(associated[0].authors).to.eql([{ id: 17 }]);
     });
   });
 });

@@ -3,7 +3,7 @@
 window.Osteo = {
   TEMPLATES:    {},
   TRANSLATIONS: {},
-  VERSION:      "0.5.0"
+  VERSION:      "0.4.0"
 };
 
 Osteo.Cache = function() {
@@ -231,12 +231,14 @@ Osteo.View = Backbone.View.extend({
   lazyRenderDelay: 50,
 
   initialize: function(options) {
-    this.options = options || {};
-    this.lazyRenderDelay = this.options.lazyRenderDelay || this.lazyRenderDelay;
+    if (!options) options = {};
 
-    if (options.context) this.context = this.options.context;
+    this.options         = options;
+    this.lazyRenderDelay = options.lazyRenderDelay || this.lazyRenderDelay;
 
+    if (options.context) this.context = options.context;
     if (options.boundRendering) Osteo.BoundRenderer.extend(this);
+
   },
 
   context: function() {

@@ -1,3 +1,7 @@
+## v0.5.1 (2013-01-06)
+
+* Simplify view option handling. Fixes initializing with undefined options.
+
 ## v0.5.0 (2013-12-31)
 
 * Handle model associations within `set` rather than the constructor.

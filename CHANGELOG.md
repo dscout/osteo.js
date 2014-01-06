@@ -1,3 +1,8 @@
+## v0.5.2 (2013-01-06)
+
+* Prevent overwriting root on collection prototype
+* Default collection model to Osteo.Model
+
 ## v0.5.1 (2013-01-06)
 
 * Simplify view option handling. Fixes initializing with undefined options.

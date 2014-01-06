@@ -1,4 +1,12 @@
 describe('Osteo.Collection', function() {
+  describe('#model', function() {
+    it('defautlts the model to Osteo.Model', function() {
+      var collection = new Osteo.Collection();
+
+      expect(collection.model).to.eql(Osteo.Model);
+    });
+  });
+
   describe('#parse', function() {
     it('extracts data from the root key', function() {
       var collection = new Osteo.Collection([], { root: 'posts' }),

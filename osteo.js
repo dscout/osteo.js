@@ -44,7 +44,13 @@ Osteo.Collection = Backbone.Collection.extend({
   initialize: function(_models, options) {
     options = options || {};
 
-    if (options.root) this.root = options.root;
+    if (options.root)  this.root = options.root;
+
+    if (options.model) {
+      this.model = options.model;
+    } else {
+      this.model = Osteo.Model;
+    }
   },
 
   parse: function(response) {

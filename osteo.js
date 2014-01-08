@@ -259,7 +259,6 @@ Osteo.View = Backbone.View.extend({
 
     if (options.context) this.context = options.context;
     if (options.boundRendering) Osteo.BoundRenderer.extend(this);
-
   },
 
   context: function() {
@@ -268,6 +267,10 @@ Osteo.View = Backbone.View.extend({
     } else {
       return {};
     }
+  },
+
+  getContext: function() {
+    return _.isFunction(this.context) ? this.context.call(this) : this.context;
   },
 
   isRendered: function() {
@@ -298,7 +301,7 @@ Osteo.View = Backbone.View.extend({
     this._rendered = true;
 
     if (this.template) {
-      context = _.isFunction(this.context) ? this.context.call(this) : this.context;
+      context = this.getContext();
 
       this.$el.html(this.renderTemplate(this.template, context));
     }
@@ -432,13 +435,9 @@ Osteo.BoundRenderer = {
     view.boundElements = {};
     view.boundRender   = this.boundRender;
 
-    if (!view.context) {
-      view.context = function() { return view.model.attributes; };
-    }
-
     if (view.model) {
       view.listenTo(view.model, "change", function(model) {
-        this.boundRender(model.changed);
+        if (view.isRendered()) this.boundRender(model.changed);
       });
     }
   },

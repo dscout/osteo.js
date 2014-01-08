@@ -1,3 +1,13 @@
+## v0.5.3 (2013-01-08)
+
+* Stop parsing undefined responses (i.e. from a 204 No Content).
+* Wrap model toJSON in root when present. Fixes persisting models when the
+  server expects a root object.
+* Convenience method on `Router` for starting `Backbone.history` idempotently.
+* Implement route reset functionality to clear singleton instances.
+* Fix: prototype inheritance issues for `Route`, `Presenter`, `Cache`.
+* Fix: only call bound render if rendered.
+
 ## v0.5.2 (2013-01-06)
 
 * Prevent overwriting root on collection prototype

@@ -102,7 +102,7 @@ Osteo.Model = Backbone.Model.extend({
   },
 
   parse: function(response) {
-    if (this.root) {
+    if (response && this.root) {
       return response[this.root] || response;
     } else {
       return response;

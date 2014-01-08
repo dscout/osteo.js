@@ -20,6 +20,14 @@ describe('Osteo.Model', function() {
       expect(model.parse({ post: { id: 1 } })).to.eql({ id: 1 });
       expect(model.parse({ id: 1 })).to.eql({ id: 1 });
     });
+
+    it('does not extract from an empty response', function() {
+      var model = new Osteo.Model();
+
+      model.root = 'post';
+
+      expect(model.parse(undefined)).to.be.undefined;
+    });
   });
 
   describe('#toJSON', function() {

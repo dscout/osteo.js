@@ -6,11 +6,11 @@ window.Osteo = {
   VERSION:      "0.5.2"
 };
 
-Osteo.Cache = function() {
+var Cache = Osteo.Cache = function() {
   this.cache = {};
 };
 
-Osteo.Cache.prototype = {
+_.extend(Cache.prototype, {
   add: function(object) {
     if (object.model) {
       this.cache[object.model.cid] = object;
@@ -38,7 +38,9 @@ Osteo.Cache.prototype = {
   cached: function() {
     return _.uniq(_.values(this.cache));
   }
-};
+});
+
+Cache.extend = Backbone.Model.extend;
 
 Osteo.Collection = Backbone.Collection.extend({
   initialize: function(_models, options) {
@@ -142,14 +144,13 @@ Osteo.Model = Backbone.Model.extend({
   }
 });
 
-Osteo.Presenter = function(model) {
+var Presenter = Osteo.Presenter = function(model) {
   this.model = model;
   this.model.on("change", this.replicate, this);
-
   this.replicate(model);
 };
 
-Osteo.Presenter.prototype = {
+_.extend(Presenter.prototype, {
   get: function(key) {
     return this.model.get(key);
   },
@@ -163,12 +164,14 @@ Osteo.Presenter.prototype = {
 
     return true;
   }
+});
+
+Presenter.extend = Backbone.Model.extend;
+
+var Route = Osteo.Route = function() {
 };
 
-Osteo.Route = function() {
-};
-
-Osteo.Route.prototype = {
+_.extend(Route.prototype, {
   load: function() {
     return this;
   },
@@ -176,7 +179,9 @@ Osteo.Route.prototype = {
   unload: function() {
     return this;
   }
-};
+});
+
+Route.extend = Backbone.Router.extend;
 
 Osteo.Router = Backbone.Router.extend({
   handlers: {},

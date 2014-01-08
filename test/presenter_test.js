@@ -1,6 +1,20 @@
 describe('Osteo.Presenter', function() {
   var presenter, model;
 
+  describe('.extend', function() {
+    it('supports Backbone style inheritance', function() {
+      var AbsPres = Osteo.Presenter.extend({
+        ident: function() {}
+      });
+
+      model     = new Backbone.Model();
+      presenter = new AbsPres(model);
+
+      expect(presenter.get).not.to.be.undefined;
+      expect(presenter.ident).not.to.be.undefined;
+    });
+  });
+
   describe('#get', function() {
     it('delegates to the wrapped model', function() {
       model = new Backbone.Model({ title: 'dogs' });

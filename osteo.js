@@ -194,6 +194,12 @@ Osteo.Router = Backbone.Router.extend({
     this.on("route", this.handle, this);
   },
 
+  start: function(options) {
+    if (!Backbone.History.started) {
+      Backbone.history.start(options);
+    }
+  },
+
   handle: function(name, params) {
     var handlers = _.isFunction(this.handlers) ? this.handlers() : this.handlers,
         handler  = handlers[name],

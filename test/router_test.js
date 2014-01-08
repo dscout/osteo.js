@@ -94,4 +94,22 @@ describe('Osteo.Router', function() {
       expect(handler.called).to.be.true;
     });
   });
+
+  describe('#start', function() {
+    afterEach(function() {
+      Backbone.history.start.restore();
+    });
+
+    it('starts Backbone.history', function() {
+      Backbone.History.started = false;
+
+      var router = new Osteo.Router(),
+          spy    = sinon.spy(Backbone.history, 'start');
+
+      router.start({ root: '/path' });
+
+      expect(spy.called).to.be.true
+      expect(spy.getCall(0).args[0]).to.eql({ root: '/path' });
+    });
+  });
 });

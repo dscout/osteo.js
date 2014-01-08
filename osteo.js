@@ -269,10 +269,6 @@ Osteo.View = Backbone.View.extend({
     }
   },
 
-  getContext: function() {
-    return _.isFunction(this.context) ? this.context.call(this) : this.context;
-  },
-
   isRendered: function() {
     return !!this._rendered;
   },
@@ -301,7 +297,7 @@ Osteo.View = Backbone.View.extend({
     this._rendered = true;
 
     if (this.template) {
-      context = this.getContext();
+      context = _.result(this, "context");
 
       this.$el.html(this.renderTemplate(this.template, context));
     }

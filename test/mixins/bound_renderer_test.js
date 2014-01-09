@@ -6,8 +6,8 @@ describe('Osteo.BoundRenderer', function() {
 
     Osteo.BoundRenderer.extend(view);
 
-    view.$el.html(template);
-    view._rendered = true;
+    view.render()
+    view.html(template);
     model.set({ title: 'osteo' });
 
     expect(view.$el.find('p').text()).to.eq('osteo');

@@ -302,15 +302,17 @@ Osteo.View = Backbone.View.extend({
     return this;
   },
 
+  html: function(content) {
+    this.$el.html(content);
+  },
+
   render: function() {
     this.beforeRender.call(this);
 
     this._rendered = true;
 
     if (this.template) {
-      this.$el.html(
-        this.renderTemplate(this.template, _.result(this, "context"))
-      );
+      this.html(this.renderTemplate(this.template, _.result(this, "context")));
     }
 
     _.defer(_.bind(this.afterRender, this));
@@ -560,23 +562,47 @@ Osteo.CollectionView = Osteo.View.extend({
   }
 });
 
-/*
-class BuilderApp.FormView extends DscoutApp.View
-  events: ->
-    'blur   input, textarea' : 'autoSave'
-    'keyup  input, textarea' : 'autoSave'
-    'change input'           : 'autoSave'
+Osteo.FormView = Osteo.View.extend({
+  initialize: function(options) {
+    if (!options) options = {};
 
-  initialize: (@options) ->
-    @name  = @options.name
-    @title = @options.title
+    Osteo.View.prototype.initialize.call(this, options);
 
-    super
+    if (options.selector) this.selector = options.selector;
+  },
 
-    _.extend @, DscoutApp.Mixins.AutoSaveHandler
+  $form: function() {
+    var selector = this.selector || "form";
 
-    @autoSaveQueueable = true
-*/
+    return this.$(selector);
+  },
+
+  serialize: function() {
+    var $form   = this.$form(),
+        $inputs = $form.find("input, textarea");
+
+    return _.reduce($inputs, function(params, elem) {
+      var name  = elem.name,
+          value = elem.value,
+          outer;
+
+      if (name.indexOf("[") > -1) {
+        name.replace(/(\w+)\[(\w+)\]/, function(_match, out, inn) {
+          outer = out;
+          name  = inn;
+        });
+
+        if (!params[outer]) params[outer] = {};
+
+        params[outer][name] = value;
+      } else {
+        params[name] = value;
+      }
+
+      return params;
+    }, {});
+  },
+});
 
 Osteo.ModalView = Osteo.View.extend({
   className:      "modal-view js-osteo-modal",

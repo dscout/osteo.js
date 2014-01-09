@@ -18,11 +18,11 @@ describe('Osteo.Collection', function() {
 
   describe('.root', function() {
     it('passes root options through to models', function() {
-      var collection = new Osteo.Collection([], { root: 'posts' });
+      var collection = new Osteo.Collection([], { root: 'posts' }),
+          models = collection.set({ posts: [{ id: 2 }, { id: 3 }]}, { parse: true });
 
-      model = collection.add({ posts: [{ id: 1 }]});
-
-      expect(model.root).to.eq('post');
+      expect(models[0].root).to.eq('post');
+      expect(models[1].root).to.eq('post');
     });
   });
 

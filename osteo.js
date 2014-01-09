@@ -46,7 +46,7 @@ Osteo.Collection = Backbone.Collection.extend({
   initialize: function(_models, options) {
     options = options || {};
 
-    if (options.root)  this.root = options.root;
+    if (options.root) this.root = options.root;
 
     if (options.model) {
       this.model = options.model;
@@ -64,14 +64,16 @@ Osteo.Collection = Backbone.Collection.extend({
     }
   },
 
-  add: function() {
-    var singular, results;
-
-    results = Backbone.Collection.prototype.add.apply(this, arguments);
+  set: function(models, options) {
+    var results = Backbone.Collection.prototype.set.call(this, models, options),
+        singular;
 
     if (this.root) {
       singular = Osteo.Sideload.singularize(this.root);
-      this.each(function(model) { model.root = singular; });
+
+      _.each((_.isArray(results) ? results : [results]), function(model) {
+        model.root = singular;
+      });
     }
 
     return results;

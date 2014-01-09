@@ -269,7 +269,8 @@ Osteo.View = Backbone.View.extend({
     this.options         = options;
     this.lazyRenderDelay = options.lazyRenderDelay || this.lazyRenderDelay;
 
-    if (options.context) this.context = options.context;
+    if (options.context)  this.context = options.context;
+    if (options.template) this.template = options.template;
     if (options.boundRendering) Osteo.BoundRenderer.extend(this);
   },
 
@@ -302,16 +303,14 @@ Osteo.View = Backbone.View.extend({
   },
 
   render: function() {
-    var context;
-
     this.beforeRender.call(this);
 
     this._rendered = true;
 
     if (this.template) {
-      context = _.result(this, "context");
-
-      this.$el.html(this.renderTemplate(this.template, context));
+      this.$el.html(
+        this.renderTemplate(this.template, _.result(this, "context"))
+      );
     }
 
     _.defer(_.bind(this.afterRender, this));
@@ -560,6 +559,24 @@ Osteo.CollectionView = Osteo.View.extend({
     view.destroy();
   }
 });
+
+/*
+class BuilderApp.FormView extends DscoutApp.View
+  events: ->
+    'blur   input, textarea' : 'autoSave'
+    'keyup  input, textarea' : 'autoSave'
+    'change input'           : 'autoSave'
+
+  initialize: (@options) ->
+    @name  = @options.name
+    @title = @options.title
+
+    super
+
+    _.extend @, DscoutApp.Mixins.AutoSaveHandler
+
+    @autoSaveQueueable = true
+*/
 
 Osteo.ModalView = Osteo.View.extend({
   className:      "modal-view js-osteo-modal",

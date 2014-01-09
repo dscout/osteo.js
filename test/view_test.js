@@ -1,6 +1,17 @@
 describe('Osteo.View', function() {
   var view;
 
+  describe('#initialize', function() {
+    it('assigns known options', function() {
+      var context  = { id: 1 },
+          template = '<div></div>',
+          view     = new Osteo.View({ context: context, template: template });
+
+      expect(view.context).to.eql(context);
+      expect(view.template).to.eql(template);
+    });
+  });
+
   describe('#render', function() {
     it('flags the view as being rendered', function() {
       view = new Osteo.View({});

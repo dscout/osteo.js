@@ -76,9 +76,8 @@ describe('Osteo.Router', function() {
     var router;
 
     beforeEach(function() {
-      Backbone.history.start({ silent: true, pushState: false });
-
       router = new Osteo.Router({ routes: { 'help' : 'help' } });
+      router.start({ silent: true, pushState: false });
     });
 
     afterEach(function() {
@@ -92,6 +91,14 @@ describe('Osteo.Router', function() {
       router.visit('help');
 
       expect(handler.called).to.be.true;
+    });
+
+    it('accepts options for navagate', function() {
+      var spy = sinon.spy(router, 'navigate');
+
+      router.visit('help', {}, { replace: true });
+
+      expect(spy.calledWith('help', { trigger: true, replace: true })).to.be.true
     });
   });
 

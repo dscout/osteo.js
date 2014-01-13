@@ -9,7 +9,7 @@
   "quotmark": "double",
   "trailing": true,
   "undef": true,
-  "unused": true,
+  "unused": false,
   "globals": {
     "$": true,
     "_": true,

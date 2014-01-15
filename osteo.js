@@ -203,20 +203,48 @@ var Route = Osteo.Route = function() {
 };
 
 Route.reset = function() {
-  this.instance = undefined;
+  this._singleton = undefined;
+};
+
+Route.singleton = function() {
+  this._singleton = this._singleton || new this();
+
+  return this._singleton;
 };
 
 _.extend(Route.prototype, {
-  load: function() {
-    return this;
+  load: function(params) {
+    var promise = new Promise(function(resolve, reject) {
+      resolve(params);
+    });
+
+    return promise
+      .then(_.bind(this.loadData, this))
+      .then(_.bind(this.loadView, this))
+      .catch(_.bind(this.loadError, this));
   },
 
-  unload: function() {
-    return this;
-  }
+  unload: function(params) {
+    var promise = new Promise(function(resolve, reject) {
+      resolve(params);
+    });
+
+    return promise
+      .then(_.bind(this.unloadData, this))
+      .then(_.bind(this.unloadView, this))
+      .catch(_.bind(this.unloadError, this));
+  },
+
+  loadData:  function() {},
+  loadView:  function() {},
+  loadError: function() {},
+
+  unloadData:  function() {},
+  unloadView:  function() {},
+  unloadError: function() {}
 });
 
-Route.extend = Backbone.Router.extend;
+Route.extend = Backbone.Model.extend;
 
 Osteo.Router = Backbone.Router.extend({
   handlers: {},
@@ -239,7 +267,7 @@ Osteo.Router = Backbone.Router.extend({
     if (this.lastRoute) this.lastRoute.unload();
 
     if (handler) {
-      route = this._getRouteInstance(handler);
+      route = handler.singleton();
       route.load(params);
     }
 
@@ -267,17 +295,6 @@ Osteo.Router = Backbone.Router.extend({
     options = _.defaults({}, options, { trigger: true });
 
     this.navigate(path, options);
-  },
-
-  _getRouteInstance: function(handler) {
-    var route;
-
-    if (!handler.instance) {
-      route = new handler();
-      handler.instance = function() { return route; };
-    }
-
-    return handler.instance();
   }
 });
 

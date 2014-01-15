@@ -1,8 +1,20 @@
 describe('Osteo.Router', function() {
+  var HelpRoute;
+
+  beforeEach(function() {
+    HelpRoute = Osteo.Route.extend({
+      load:   sinon.spy(),
+      unload: sinon.spy()
+    });
+  });
+
+  afterEach(function() {
+    HelpRoute.reset();
+  });
+
   describe('#handle', function() {
     it('loads the route with the associated name', function() {
-      var router    = new Osteo.Router(),
-          HelpRoute = function() { this.load = sinon.spy(); };
+      var router = new Osteo.Router();
 
       router.handlers = { 'help' : HelpRoute };
 
@@ -14,10 +26,6 @@ describe('Osteo.Router', function() {
 
     it('unloads the previous route', function() {
       var router = new Osteo.Router(),
-          HelpRoute = function() {
-            this.load   = sinon.spy();
-            this.unload = sinon.spy();
-          },
           route;
 
       router.handlers = { 'help' : HelpRoute };

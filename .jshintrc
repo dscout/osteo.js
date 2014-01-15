@@ -14,6 +14,7 @@
     "$": true,
     "_": true,
     "Backbone": true,
-    "Osteo": true
+    "Osteo": true,
+    "Promise": true
   }
 }

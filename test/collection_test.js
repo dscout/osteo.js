@@ -23,6 +23,22 @@ describe('Osteo.Collection', function() {
     });
   });
 
+  describe('#toJSON', function() {
+    it('flattens model attributes', function() {
+      var models = [{ id: 1 }, { id: 2 }],
+          collection = new Osteo.Collection(models, { root: 'posts' });
+
+      expect(collection.toJSON()).to.eql(models);
+    });
+
+    it('flattens models into the root namespace', function() {
+      var models = [{ id: 1 }, { id: 2 }],
+          collection = new Osteo.Collection(models, { root: 'posts' });
+
+      expect(collection.toJSON({ rooted: true })).to.eql({ posts: models });
+    });
+  });
+
   describe('.root', function() {
     it('passes root options through to models', function() {
       var collection = new Osteo.Collection([], { root: 'posts' }),

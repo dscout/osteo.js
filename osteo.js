@@ -43,6 +43,8 @@ _.extend(Cache.prototype, {
 Cache.extend = Backbone.Model.extend;
 
 Osteo.Collection = Backbone.Collection.extend({
+  model: Osteo.Model,
+
   initialize: function(_models, options) {
     options = options || {};
 
@@ -61,6 +63,22 @@ Osteo.Collection = Backbone.Collection.extend({
       return response[this.root];
     } else {
       return response;
+    }
+  },
+
+  toJSON: function(options) {
+    var object = {};
+
+    var models = this.map(function(model) {
+      return _.clone(model.attributes);
+    });
+
+    if (options && options.rooted) {
+      object[this.root] = models;
+
+      return object;
+    } else {
+      return models;
     }
   },
 

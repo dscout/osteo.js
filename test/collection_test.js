@@ -14,6 +14,13 @@ describe('Osteo.Collection', function() {
 
       expect(collection.parse(payload).length).to.eq(2);
     });
+
+    it('falls back to the response without a root', function() {
+      var collection = new Osteo.Collection([], { root: 'posts' }),
+          payload = [{ id: 1 }, { id: 2 }];
+
+      expect(collection.parse(payload)).to.eql(payload);
+    });
   });
 
   describe('.root', function() {

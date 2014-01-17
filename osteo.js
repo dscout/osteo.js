@@ -43,8 +43,6 @@ _.extend(Cache.prototype, {
 Cache.extend = Backbone.Model.extend;
 
 Osteo.Collection = Backbone.Collection.extend({
-  model: Osteo.Model,
-
   initialize: function(_models, options) {
     options = options || {};
 
@@ -82,21 +80,6 @@ Osteo.Collection = Backbone.Collection.extend({
     }
   },
 
-  set: function(models, options) {
-    var results = Backbone.Collection.prototype.set.call(this, models, options),
-        singular;
-
-    if (this.root) {
-      singular = Osteo.Sideload.singularize(this.root);
-
-      _.each((_.isArray(results) ? results : [results]), function(model) {
-        model.root = singular;
-      });
-    }
-
-    return results;
-  },
-
   toPresenters: function(presenter) {
     if (!presenter) presenter = Osteo.Presenter;
 
@@ -105,8 +88,26 @@ Osteo.Collection = Backbone.Collection.extend({
     });
   },
 
+  set: function(models, options) {
+    options = _.defaults({}, options, { parse: true });
+
+    var results = Backbone.Collection.prototype.set.call(this, models, options);
+
+    if (this.root) this._rootModels(this.root, results);
+
+    return results;
+  },
+
   associateRelations: function(response, root) {
     return Osteo.Sideload.associate(response, root);
+  },
+
+  _rootModels: function(root, models) {
+    var singular = Osteo.Sideload.singularize(root);
+
+    _.each((_.isArray(models) ? models : [models]), function(model) {
+      model.root = singular;
+    });
   }
 });
 

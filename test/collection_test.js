@@ -23,6 +23,19 @@ describe('Osteo.Collection', function() {
     });
   });
 
+  describe('#set', function() {
+    it('correctly merges models with a root', function() {
+      var payload    = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }],
+          collection = new Osteo.Collection(payload, { root: 'posts' });
+
+      collection.set({ posts: [
+        { id: 1, name: 'z' }, { id: 3, name: 'y' }
+      ]}, { remove: false });
+
+      expect(collection.pluck('name')).to.eql(['z', 'b', 'y'])
+    });
+  });
+
   describe('#toJSON', function() {
     it('flattens model attributes', function() {
       var models = [{ id: 1 }, { id: 2 }],

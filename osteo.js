@@ -3,7 +3,7 @@
 window.Osteo = {
   TEMPLATES:    {},
   TRANSLATIONS: {},
-  VERSION:      "0.5.3"
+  VERSION:      "0.6.0"
 };
 
 Osteo.Model = Backbone.Model.extend({

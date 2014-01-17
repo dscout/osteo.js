@@ -1,3 +1,15 @@
+## v0.6.0 (2013-01-17)
+
+* Route loading and unloading uses promises.
+* Override `toJSON` for collection serialization.
+* Fallback to response when parsing without root.
+* Pass navigation options through `visit`.
+* Transplant collection root onto models during `set`.
+* FormView for convenient form handling and serialization.
+* Accept a template passed to the view in options.
+* Fix: Set root within the collection constructor.
+* FIx: Default collection set operations to parse.
+
 ## v0.5.3 (2013-01-08)
 
 * Stop parsing undefined responses (i.e. from a 204 No Content).

@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     concat: {
       dist: {
-        src: ['lib/osteo.js', 'lib/*.js', 'lib/**/*.js'],
+        src: ['lib/osteo.js', 'lib/model.js', 'lib/*.js', 'lib/**/*.js'],
         dest: 'osteo.js',
         options: {
           banner: ";(function(window, undefined) {\n\"use strict\";\n",

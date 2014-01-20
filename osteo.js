@@ -615,9 +615,10 @@ Osteo.FormView = Osteo.View.extend({
     return this.$(selector);
   },
 
-  serialize: function() {
-    var $form   = this.$form(),
-        $inputs = $form.find("input, textarea");
+  serialize: function($form) {
+    $form = $form || this.$form();
+
+    var $inputs = $form.find("input, textarea");
 
     return _.reduce($inputs, function(params, elem) {
       var name  = elem.name,

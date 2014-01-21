@@ -80,4 +80,55 @@ describe('Osteo.CollectionView', function() {
       expect(itemView).to.eql(view.getItemView(model));
     });
   });
+
+  describe('#emptyTemplate', function() {
+    beforeEach(function() {
+      var empty = Handlebars.compile('<p class="empty">Empty</p>');
+
+      Osteo.TEMPLATES['empty/template'] = empty;
+    });
+
+    afterEach(function() {
+      delete Osteo.TEMPLATES['empty/template'];
+    });
+
+    it('renders the emptyTemplate for an empty collection', function() {
+      var coll = new Osteo.Collection(),
+          view = new Osteo.CollectionView({
+            collection:    coll,
+            emptyTemplate: 'empty/template'
+          });
+
+      view.reset();
+
+      expect(view.$el.text()).to.contain('Empty');
+    });
+
+    it('removes the empty template when an item is added', function() {
+      var coll = new Osteo.Collection(),
+          view = new Osteo.CollectionView({
+            collection:    coll,
+            emptyTemplate: 'empty/template'
+          });
+
+      view.reset();
+      coll.add({ id: 1 });
+
+      expect(view.$el.text()).not.to.contain('Empty');
+    });
+
+    it('restores the empty view when a model is removed', function() {
+      var coll = new Osteo.Collection([{ id: 1 }]),
+          view = new Osteo.CollectionView({
+            collection:    coll,
+            emptyTemplate: 'empty/template'
+          });
+
+      view.reset();
+
+      expect(view.$el.text()).not.to.contain('Empty');
+      coll.remove(coll.get(1));
+      expect(view.$el.text()).to.contain('Empty');
+    });
+  });
 });

@@ -26,12 +26,12 @@ describe('Osteo.CollectionView', function() {
     });
   });
 
-  describe('#renderContext', function() {
+  describe('#context', function() {
     it('sets the context to the collection', function() {
       var coll = new Backbone.Collection(),
           view = new Osteo.CollectionView({ collection: coll });
 
-      expect(view.renderContext()).to.eql(coll);
+      expect(view.context()).to.eql(coll);
     });
   });
 

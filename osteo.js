@@ -564,7 +564,7 @@ Osteo.CollectionView = Osteo.View.extend({
     return view;
   },
 
-  renderContext: function() {
+  context: function() {
     return this.collection;
   },
 

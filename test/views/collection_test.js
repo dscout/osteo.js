@@ -2,10 +2,10 @@ describe('Osteo.CollectionView', function() {
   describe('#initialize', function() {
     it('assigns passed options', function() {
       var cons = { id: 100 },
-          view = new Osteo.CollectionView({ selector: '#thing', viewClass: cons });
+          view = new Osteo.CollectionView({ selector: '#thing', itemView: cons });
 
       expect(view.selector).to.eq('#thing');
-      expect(view.viewClass).to.eql(cons);
+      expect(view.itemView).to.eql(cons);
     });
   });
 
@@ -62,6 +62,22 @@ describe('Osteo.CollectionView', function() {
       newFirst = view.$el.children().first();
 
       expect(newFirst[0]).not.to.eql(oldFirst[0]);
+    });
+  });
+
+  describe('#getItemView', function() {
+    it('gets the view that matches the model', function() {
+      var model = new Osteo.Model(),
+          coll  = new Osteo.Collection(),
+          view  = new Osteo.CollectionView({
+            collection: coll,
+            itemView: Osteo.View
+          });
+
+      var itemView = view.getItemView(model);
+
+      expect(itemView).to.be.instanceof(Osteo.View);
+      expect(itemView).to.eql(view.getItemView(model));
     });
   });
 });

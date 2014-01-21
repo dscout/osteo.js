@@ -508,16 +508,16 @@ Osteo.BoundRenderer = {
 };
 
 Osteo.CollectionView = Osteo.View.extend({
-  viewClass: Osteo.View,
+  itemView: Osteo.View,
 
   initialize: function(options) {
     Osteo.View.prototype.initialize.call(this, options);
 
-    if (options.selector)  this.selector  = options.selector;
-    if (options.viewClass) this.viewClass = options.viewClass;
+    if (options.selector) this.selector = options.selector;
+    if (options.itemView) this.itemView = options.itemView;
 
     if (this.collection) {
-      this.listenTo(this.collection, "add",     this.addView);
+      this.listenTo(this.collection, "add",     this.addItemView);
       this.listenTo(this.collection, "destroy", this.modelDestroyed);
       this.listenTo(this.collection, "reset",   this.reset);
       this.listenTo(this.collection, "sort",    this.sort);
@@ -538,8 +538,8 @@ Osteo.CollectionView = Osteo.View.extend({
     return this._container;
   },
 
-  addView: function(model, collection) {
-    var view  = this.getView(model).show(),
+  addItemView: function(model, collection) {
+    var view  = this.getItemView(model).show(),
         index = this.collection.indexOf(model),
         exModel, exView;
 
@@ -547,17 +547,17 @@ Osteo.CollectionView = Osteo.View.extend({
       this.container().prepend(view.$el);
     } else {
       exModel = collection.at(index - 1);
-      exView  = this.getView(exModel);
+      exView  = this.getItemView(exModel);
 
       exView.$el.after(view.$el);
     }
   },
 
-  getView: function(model) {
+  getItemView: function(model) {
     var view = this.viewCache.get(model);
 
     if (!view) {
-      view = new this.viewClass({ model: model });
+      view = new this.itemView({ model: model });
       this.viewCache.add(view);
     }
 
@@ -572,7 +572,7 @@ Osteo.CollectionView = Osteo.View.extend({
     if (!this.isRendered()) this.render();
 
     var $elements = this.collection.map(function(model) {
-      return this.getView(model).show().$el;
+      return this.getItemView(model).show().$el;
     }, this);
 
     this.container().html($elements);
@@ -594,7 +594,7 @@ Osteo.CollectionView = Osteo.View.extend({
   },
 
   modelDestroyed: function(model) {
-    var view = this.getView(model);
+    var view = this.getItemView(model);
     this.viewCache.remove(model);
     view.destroy();
   }

@@ -166,6 +166,14 @@ Osteo.Collection = Backbone.Collection.extend({
     return Osteo.Sideload.associate(response, root);
   },
 
+  _prepareModel: function(attrs, options) {
+    var result = Backbone.Collection.prototype._prepareModel.call(this, attrs, options);
+
+    if (this.root && result) this._rootModels(this.root, [result]);
+
+    return result;
+  },
+
   _rootModels: function(root, models) {
     var singular = Osteo.Sideload.singularize(root);
 

@@ -36,6 +36,16 @@ describe('Osteo.Collection', function() {
     });
   });
 
+  describe('#_prepareModel', function() {
+    it('passes the root through to new models', function() {
+      var coll = new Osteo.Collection([], { root: 'posts' });
+
+      var model = coll._prepareModel({ id: 1 });
+
+      expect(model.root).to.eq('post')
+    });
+  });
+
   describe('#toJSON', function() {
     it('flattens model attributes', function() {
       var models = [{ id: 1 }, { id: 2 }],

@@ -131,4 +131,29 @@ describe('Osteo.CollectionView', function() {
       expect(view.$el.text()).to.contain('Empty');
     });
   });
+
+  describe('#itemTemplate', function() {
+    beforeEach(function() {
+      var item = Handlebars.compile('<p>{{name}}</p>');
+
+      Osteo.TEMPLATES['item'] = item;
+    });
+
+    afterEach(function() {
+      delete Osteo.TEMPLATES['item'];
+    });
+
+    it('renders the template for each item in place of a view', function() {
+      var coll = new Osteo.Collection([{ name: 'osteo.js' }]),
+          view = new Osteo.CollectionView({
+            collection:   coll,
+            itemTemplate: 'item'
+          });
+
+      view.reset();
+
+      expect(view.$el.children().length).to.eq(1);
+      expect(view.$el.text()).to.contain('osteo.js');
+    });
+  });
 });

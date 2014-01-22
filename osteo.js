@@ -509,6 +509,7 @@ Osteo.BoundRenderer = {
 
 Osteo.CollectionView = Osteo.View.extend({
   itemView:      Osteo.View,
+  itemTemplate:  null,
   emptyTemplate: null,
 
   initialize: function(options) {
@@ -516,6 +517,7 @@ Osteo.CollectionView = Osteo.View.extend({
 
     if (options.selector)      this.selector      = options.selector;
     if (options.itemView)      this.itemView      = options.itemView;
+    if (options.itemTemplate)  this.itemTemplate  = options.itemTemplate;
     if (options.emptyTemplate) this.emptyTemplate = options.emptyTemplate;
 
     if (this.collection) {
@@ -563,7 +565,11 @@ Osteo.CollectionView = Osteo.View.extend({
     var view = this.viewCache.get(model);
 
     if (!view) {
-      view = new this.itemView({ model: model });
+      view = new this.itemView({
+        model:    model,
+        template: this.itemTemplate
+      });
+
       this.viewCache.add(view);
     }
 
@@ -575,6 +581,7 @@ Osteo.CollectionView = Osteo.View.extend({
 
     this.viewCache.remove(model);
     this.renderEmpty();
+
     view.destroy();
   },
 

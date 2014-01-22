@@ -36,11 +36,11 @@ describe('Osteo.Collection', function() {
     });
   });
 
-  describe('#_prepareModel', function() {
+  describe('#create', function() {
     it('passes the root through to new models', function() {
       var coll = new Osteo.Collection([], { root: 'posts' });
 
-      var model = coll._prepareModel({ id: 1 });
+      var model = coll.create({ id: 1 });
 
       expect(model.root).to.eq('post')
     });

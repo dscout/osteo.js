@@ -13,8 +13,13 @@ Osteo.Model = Backbone.Model.extend({
 
   root: null,
 
-  initialize: function() {
+  constructor: function(models, options) {
+    options = options || {};
+
+    if (options.root) this.root = options.root;
     this.autoSaveDelay = this.defaultAutoSaveDelay;
+
+    Backbone.Model.prototype.constructor.apply(this, arguments);
   },
 
   parse: function(response) {
@@ -152,34 +157,30 @@ Osteo.Collection = Backbone.Collection.extend({
     });
   },
 
+  create: function(model, options) {
+    options = options ? options : {};
+    options = this._rootOptions(options);
+
+    return Backbone.Collection.prototype.set.call(this, model, options);
+  },
+
   set: function(models, options) {
     options = _.defaults({}, options, { parse: true });
+    options = this._rootOptions(options);
 
-    var results = Backbone.Collection.prototype.set.call(this, models, options);
-
-    if (this.root) this._rootModels(this.root, results);
-
-    return results;
+    return Backbone.Collection.prototype.set.call(this, models, options);
   },
 
   associateRelations: function(response, root) {
     return Osteo.Sideload.associate(response, root);
   },
 
-  _prepareModel: function(attrs, options) {
-    var result = Backbone.Collection.prototype._prepareModel.call(this, attrs, options);
+  _rootOptions: function(options) {
+    if (this.root) {
+      options.root = Osteo.Sideload.singularize(this.root);
+    }
 
-    if (this.root && result) this._rootModels(this.root, [result]);
-
-    return result;
-  },
-
-  _rootModels: function(root, models) {
-    var singular = Osteo.Sideload.singularize(root);
-
-    _.each((_.isArray(models) ? models : [models]), function(model) {
-      model.root = singular;
-    });
+    return options;
   }
 });
 

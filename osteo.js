@@ -161,7 +161,7 @@ Osteo.Collection = Backbone.Collection.extend({
     options = options ? options : {};
     options = this._rootOptions(options);
 
-    return Backbone.Collection.prototype.set.call(this, model, options);
+    return Backbone.Collection.prototype.create.call(this, model, options);
   },
 
   set: function(models, options) {

@@ -37,8 +37,15 @@ describe('Osteo.Collection', function() {
   });
 
   describe('#create', function() {
+    var LocalModel = Osteo.Model.extend({
+      save: function() { return true; }
+    });
+
     it('passes the root through to new models', function() {
-      var coll = new Osteo.Collection([], { root: 'posts' });
+      var coll = new Osteo.Collection([], {
+        model: LocalModel,
+        root: 'posts'
+      });
 
       var model = coll.create({ id: 1 });
 

@@ -5,7 +5,6 @@ describe('Osteo.ModalView', function() {
 
       modal.display();
 
-      expect($('.js-osteo-screen').length).to.eq(1);
       expect($('.js-osteo-modal').length).to.eq(1);
     });
 
@@ -24,14 +23,13 @@ describe('Osteo.ModalView', function() {
   });
 
   describe('#cancel', function() {
-    it('hides both the modal and the screen', function() {
+    it('hides the modal', function() {
       var modal = new Osteo.ModalView({});
 
       modal.display();
       modal.cancel();
 
       expect(modal.$el.hasClass('hide')).to.be.true;
-      expect(modal.$screen.hasClass('hide')).to.be.true;
     });
   });
 });

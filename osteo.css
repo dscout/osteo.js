@@ -1,19 +1,8 @@
-.modal-screen {
-  background: black;
-  bottom: 0;
-  display: none;
-  left: 0;
-  opacity: 0.75;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 9997;
-}
-
 .modal-view {
   background: #fff;
   border-radius: 20px;
   bottom: 0;
+  box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.85);
   display: none;
   height: 240px;
   left: 0;

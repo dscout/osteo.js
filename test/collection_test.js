@@ -7,6 +7,23 @@ describe('Osteo.Collection', function() {
     });
   });
 
+  describe('#lookup', function() {
+    it('returns existing models', function() {
+      var collection = new Osteo.Collection([{ id: 1, name: 'osteo' }]);
+
+      expect(collection.lookup(1).get('name')).to.eq('osteo');
+    });
+
+    it('returns a new model instance without an existing model', function() {
+      var collection = new Osteo.Collection([]);
+
+      var found = collection.lookup(1, { name: 'osteo' });
+
+      expect(found.id).to.eq(1);
+      expect(found.get('name')).to.eq('osteo');
+    });
+  });
+
   describe('#parse', function() {
     it('extracts data from the root key', function() {
       var collection = new Osteo.Collection([], { root: 'posts' }),

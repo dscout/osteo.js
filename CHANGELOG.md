@@ -1,3 +1,9 @@
+## v0.6.1 (2013-03-13)
+
+* Collection#lookup method for simple identity map behavior.
+* Association sideloading behaves identically between collections and models,
+  even after fetching.
+
 ## v0.6.0 (2013-01-17)
 
 * Route loading and unloading uses promises.

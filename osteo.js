@@ -23,8 +23,8 @@ Osteo.Model = Backbone.Model.extend({
   },
 
   parse: function(response) {
-    if (response && this.root) {
-      return response[this.root] || response;
+    if (response && this.root && response[this.root]) {
+      return this.associateRelations(response, this.root)[0];
     } else {
       return response;
     }
@@ -56,6 +56,10 @@ Osteo.Model = Backbone.Model.extend({
     this.debouncedSave();
 
     return true;
+  },
+
+  associateRelations: function(response, root) {
+    return Osteo.Sideload.associate(response, root);
   },
 
   attachRelations: function(attributes) {

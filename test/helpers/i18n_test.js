@@ -32,5 +32,13 @@ describe('Osteo.I18n', function() {
 
       expect(t('simple', { hash: { val: 'Osteo' }})).to.eq('Osteo');
     });
+
+    it('throws an unknown key error', function() {
+      Osteo.TRANSLATIONS = {};
+
+      fn = function() { t('simple.path') };
+
+      expect(fn).to.throw(/unknown translation/i);
+    });
   });
 });

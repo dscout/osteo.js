@@ -1,9 +1,8 @@
 ;(function(window, undefined) {
 "use strict";
 window.Osteo = {
-  TEMPLATES:    {},
-  TRANSLATIONS: {},
-  VERSION:      "0.6.1"
+  TEMPLATES: {},
+  VERSION:   "0.6.1"
 };
 
 Osteo.Model = Backbone.Model.extend({
@@ -429,6 +428,8 @@ Osteo.View = Backbone.View.extend({
 Osteo.I18n = {
   pattern: /%\{(.+?)\}/g,
 
+  translations: {},
+
   lookup: function(path, options) {
     var hash = options ? (options.hash || options) : {};
 
@@ -440,7 +441,7 @@ Osteo.I18n = {
       } else {
         return trans[key];
       }
-    }, Osteo.TRANSLATIONS);
+    }, Osteo.I18n.translations);
 
     return buff.replace(Osteo.I18n.pattern, function(match, capture) {
       return hash[capture];

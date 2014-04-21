@@ -1,10 +1,18 @@
-## v0.6.1 (2013-03-13)
+## v0.7.0 (2014-04-21)
+
+* Remove all view and presenter related constructs. This is entirely backward
+  incompatible! Osteo is purely focused on providing a data interface between
+  backbone and modern APIs.
+* Remove reliance on `Osteo.TRANSLATIONS` global.
+* Throw a translation error for missing key fragments.
+
+## v0.6.1 (2014-03-13)
 
 * Collection#lookup method for simple identity map behavior.
 * Association sideloading behaves identically between collections and models,
   even after fetching.
 
-## v0.6.0 (2013-01-17)
+## v0.6.0 (2014-01-17)
 
 * Route loading and unloading uses promises.
 * Override `toJSON` for collection serialization.
@@ -16,7 +24,7 @@
 * Fix: Set root within the collection constructor.
 * FIx: Default collection set operations to parse.
 
-## v0.5.3 (2013-01-08)
+## v0.5.3 (2014-01-08)
 
 * Stop parsing undefined responses (i.e. from a 204 No Content).
 * Wrap model toJSON in root when present. Fixes persisting models when the
@@ -26,12 +34,12 @@
 * Fix: prototype inheritance issues for `Route`, `Presenter`, `Cache`.
 * Fix: only call bound render if rendered.
 
-## v0.5.2 (2013-01-06)
+## v0.5.2 (2014-01-06)
 
 * Prevent overwriting root on collection prototype
 * Default collection model to Osteo.Model
 
-## v0.5.1 (2013-01-06)
+## v0.5.1 (2014-01-06)
 
 * Simplify view option handling. Fixes initializing with undefined options.
 

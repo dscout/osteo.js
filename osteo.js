@@ -1,8 +1,7 @@
 ;(function(window, undefined) {
 "use strict";
 window.Osteo = {
-  TEMPLATES: {},
-  VERSION:   "0.6.1"
+  VERSION: "0.7.0"
 };
 
 Osteo.Model = Backbone.Model.extend({
@@ -71,7 +70,11 @@ Osteo.Model = Backbone.Model.extend({
       data = attributes[rel];
       collection = relations[rel];
 
-      this[rel] = new collection(data);
+      if (this[rel]) {
+        this[rel].reset(data);
+      } else {
+        this[rel] = new collection(data);
+      }
 
       delete attributes[rel];
     }

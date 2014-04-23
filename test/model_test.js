@@ -81,6 +81,16 @@ describe('Osteo.Model', function() {
       expect(post.tags).to.be.instanceof(Backbone.Collection);
       expect(post.tags.length).to.eq(1)
     });
+
+    it('preserves existing relations for additional associations', function() {
+      var post = new Post({ id: 1 });
+
+      post.set({ tags: [{ id: 2 }] });
+      post.tags._cid = 100;
+
+      post.set({ tags: [{ id: 2 }, { id: 3 }] });
+      expect(post.tags._cid).to.eq(100);
+    });
   });
 });
 

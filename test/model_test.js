@@ -62,14 +62,14 @@ describe('Osteo.Model', function() {
     });
 
     it('maps defined relational attributes', function() {
-      var post = new Post({ id: 1, tags: [{ id: 2 }], comments: [{ id: 3 }] });
+      var post = new Post({ id: 1, tags: [{ id: 2 }]});
 
       expect(post.get('tags')).to.be.undefined;
       expect(post.get('comments')).to.be.undefined;
       expect(post.tags).to.be.instanceof(Backbone.Collection);
       expect(post.comments).to.be.instanceof(Backbone.Collection);
       expect(post.tags.length).to.eq(1)
-      expect(post.comments.length).to.eq(1)
+      expect(post.comments.length).to.eq(0)
     });
 
     it('applies attributes after the model has been created', function() {

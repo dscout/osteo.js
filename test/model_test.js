@@ -82,14 +82,14 @@ describe('Osteo.Model', function() {
       expect(post.tags.length).to.eq(1)
     });
 
-    it('preserves existing relations for additional associations', function() {
+    it('preserves existing relation models without new data', function() {
       var post = new Post({ id: 1 });
 
       post.set({ tags: [{ id: 2 }] });
-      post.tags._cid = 100;
+      expect(post.tags.length).to.eq(1);
 
-      post.set({ tags: [{ id: 2 }, { id: 3 }] });
-      expect(post.tags._cid).to.eq(100);
+      post.set({ title: 'Great' });
+      expect(post.tags.length).to.eq(1);
     });
   });
 });

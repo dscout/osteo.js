@@ -84,9 +84,11 @@ Osteo.Model = Backbone.Model.extend({
     for (var rel in relations) {
       data = attributes[rel];
 
-      if (this[rel]) this[rel].reset(data);
+      if (this[rel] && data) {
+        this[rel].reset(data);
 
-      delete attributes[rel];
+        delete attributes[rel];
+      }
     }
 
     return attributes;

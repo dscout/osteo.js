@@ -109,7 +109,9 @@ Osteo.Collection = Backbone.Collection.extend({
   lookup: function(id, attributes) {
     attributes = _.defaults((attributes || {}), { id: id });
 
-    return this.get(id) || new this.model(attributes);
+    this.add(attributes);
+
+    return this.get(id);
   },
 
   parse: function(response) {

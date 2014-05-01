@@ -21,6 +21,8 @@ describe('Osteo.Collection', function() {
 
       expect(found.id).to.eq(1);
       expect(found.get('name')).to.eq('osteo');
+      expect(found.collection).to.eql(collection);
+      expect(collection.get(1)).not.to.be.undefined;
     });
 
     it('gracefully handles undefined attributes', function() {

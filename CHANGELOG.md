@@ -1,3 +1,14 @@
+## v0.7.1 (2014-06-07)
+
+* Ensure looked up models belong to the collection. The `lookup` method will
+  create a new model if it fails to find a match. Previously it didn't always
+  add the newly created model to the parent collection.
+* Preserve associated models when setting without assocation data.
+* Create model relations during construction. This ensures that an empty
+  associated collection is present even before additional data is fetched.
+* Preserve previous created associated collections. Fetching associated models
+  multiple times would clobber the currently loaded data.
+
 ## v0.7.0 (2014-04-21)
 
 * Remove all view and presenter related constructs. This is entirely backward

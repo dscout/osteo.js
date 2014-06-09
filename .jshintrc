@@ -1,12 +1,13 @@
 {
   "browser": true,
+  "node": true,
   "camelcase": true,
   "eqeqeq": true,
   "immed": true,
   "latedef": true,
   "newcap": false,
   "noarg": true,
-  "quotmark": "double",
+  "quotmark": "single",
   "trailing": true,
   "undef": true,
   "unused": false,
@@ -15,6 +16,7 @@
     "_": true,
     "Backbone": true,
     "Osteo": true,
-    "Promise": true
+    "Promise": true,
+    "define": true
   }
 }

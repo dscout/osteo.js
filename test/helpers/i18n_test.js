@@ -7,7 +7,7 @@ describe('Osteo.I18n', function() {
     var t = Osteo.I18n.lookup;
 
     it('translates basic keys', function() {
-      Osteo.18n.translations = { 'simple': 'hello!' };
+      Osteo.I18n.translations = { 'simple': 'hello!' };
 
       expect(t('simple')).to.eq('hello!');
     });
@@ -21,20 +21,20 @@ describe('Osteo.I18n', function() {
     });
 
     it('performs replacements on the final value', function() {
-      Osteo.18n.translations = { 'simple': { 'path': 'Hello %{name}, the %{thing}' }};
+      Osteo.I18n.translations = { 'simple': { 'path': 'Hello %{name}, the %{thing}' }};
 
       expect(t('simple.path', { name: 'Osteo', thing: 'framework' }))
         .to.eq('Hello Osteo, the framework');
     });
 
     it('uses the hash option for replacement', function() {
-      Osteo.18n.translations = { 'simple': '%{val}' };
+      Osteo.I18n.translations = { 'simple': '%{val}' };
 
       expect(t('simple', { hash: { val: 'Osteo' }})).to.eq('Osteo');
     });
 
     it('throws an unknown key error', function() {
-      Osteo.18n.translations = {};
+      Osteo.I18n.translations = {};
 
       fn = function() { t('simple.path') };
 

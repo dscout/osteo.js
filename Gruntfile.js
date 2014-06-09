@@ -1,22 +1,10 @@
 module.exports = function(grunt) {
   grunt.initConfig({
-    concat: {
-      dist: {
-        src: ['lib/osteo.js', 'lib/model.js', 'lib/*.js', 'lib/**/*.js'],
-        dest: 'osteo.js',
-        options: {
-          banner: ";(function(window, undefined) {\n\"use strict\";\n",
-          footer: "}(window));"
-        }
-      }
-    },
-
     jshint: {
       options: {
         jshintrc: true
       },
-      beforeconcat: ['lib/**/*.js'],
-      afterconcat:  ['osteo.js']
+      afterconcat: ['osteo.js']
     },
 
     uglify: {
@@ -44,17 +32,16 @@ module.exports = function(grunt) {
 
     watch: {
       files: ['lib/**/*.js'],
-      tasks: ['concat', 'jshint']
+      tasks: ['jshint']
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha');
 
-  grunt.registerTask('test',    ['concat', 'mocha']);
-  grunt.registerTask('default', ['test']);
-  grunt.registerTask('release', ['concat', 'mocha', 'uglify']);
+  grunt.registerTask('test',    ['mocha']);
+  grunt.registerTask('default', ['jshint', 'test']);
+  grunt.registerTask('release', ['jshint', 'mocha', 'uglify']);
 };

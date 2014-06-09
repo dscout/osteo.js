@@ -1,6 +1,6 @@
 {
-  "name": "osteo.js",
-  "main": "osteo.js",
+  "name": "osteo",
+  "main": "osteo",
   "version": "0.7.1",
   "homepage": "https://github.com/dscout/osteo.js",
   "authors": [

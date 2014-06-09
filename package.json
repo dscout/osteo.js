@@ -1,5 +1,5 @@
 {
-  "name": "osteo.js",
+  "name": "osteo",
   "version": "0.7.1",
   "description": "Opinionated Backbone",
   "main": "osteo.js",

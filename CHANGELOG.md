@@ -1,3 +1,8 @@
+## v0.8.0 (2014-06-09)
+
+* Exporting with AMD, CommonJS, browser globals. This is not a breaking change,
+  but significatn enough to warrant a minor version bump.
+
 ## v0.7.1 (2014-06-07)
 
 * Ensure looked up models belong to the collection. The `lookup` method will

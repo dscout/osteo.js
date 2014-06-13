@@ -20,14 +20,14 @@
   "author": "Parker Selbert",
   "license": "MIT",
   "dependencies": {
-    "backbone" : "~1.1"
+    "backbone": "~1.1"
   },
   "devDependencies": {
     "grunt": "~0.4",
+    "grunt-contrib-jshint": "~0.7.2",
     "grunt-contrib-uglify": "~0.2",
     "grunt-contrib-watch": "~0.5",
     "grunt-lib-phantomjs": "~0.3",
-    "grunt-mocha": "~0.4",
-    "grunt-contrib-jshint": "~0.7.2"
+    "grunt-mocha": "~0.4"
   }
 }

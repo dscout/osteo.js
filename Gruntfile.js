@@ -4,7 +4,7 @@ module.exports = function(grunt) {
       options: {
         jshintrc: true
       },
-      afterconcat: ['osteo.js']
+      all: ['osteo.js']
     },
 
     uglify: {
@@ -31,7 +31,7 @@ module.exports = function(grunt) {
     },
 
     watch: {
-      files: ['lib/**/*.js'],
+      files: ['osteo.js'],
       tasks: ['jshint']
     }
   });

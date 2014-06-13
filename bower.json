@@ -13,11 +13,20 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "backbone" : "~1.1"
+    "backbone": "~1.1"
   },
   "ignore": [
     "node_modules",
     "bower_components",
     "test"
-  ]
+  ],
+  "devDependencies": {
+    "jquery": "~2.1.1",
+    "backbone": "~1.1.2",
+    "underscore": "~1.6.0",
+    "promise-js": "~0.0.5",
+    "chai": "~1.9.1",
+    "mocha": "~1.20.1",
+    "sinon": "http://sinonjs.org/releases/sinon-1.10.2.js"
+  }
 }

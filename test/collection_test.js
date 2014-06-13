@@ -1,4 +1,20 @@
 describe('Osteo.Collection', function() {
+  describe('#mixins', function() {
+    it('extends any mixed in objects', function() {
+      var Mixin = {
+        foo: function() { return 'foo' }
+      }
+
+      var Collection = Osteo.Collection.extend({
+        mixins: [Mixin]
+      });
+
+      var collection = new Collection();
+
+      expect(collection.foo()).to.eq('foo');
+    });
+  });
+
   describe('#model', function() {
     it('defautlts the model to Osteo.Model', function() {
       var collection = new Osteo.Collection();

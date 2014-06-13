@@ -1,4 +1,20 @@
 describe('Osteo.Route', function() {
+  describe('#mixins', function() {
+    it('extends any mixed in objects', function() {
+      var Mixin = {
+        foo: function() { return 'foo' }
+      }
+
+      var Route = Osteo.Route.extend({
+        mixins: [Mixin]
+      });
+
+      var route = new Route();
+
+      expect(route.foo()).to.eq('foo');
+    });
+  });
+
   describe('.reset', function() {
     it('clears the singleton instance', function() {
       Osteo.Route.instance = {};

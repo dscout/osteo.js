@@ -1,4 +1,20 @@
 describe('Osteo.Model', function() {
+  describe('#mixins', function() {
+    it('extends any mixed in objects', function() {
+      var Mixin = {
+        foo: function() { return 'foo' }
+      }
+
+      var Model = Osteo.Model.extend({
+        mixins: [Mixin]
+      });
+
+      var model = new Model();
+
+      expect(model.foo()).to.eq('foo');
+    });
+  });
+
   describe('#autoSave', function() {
     it('stubs an autoSave method', function() {
       var model = new Osteo.Model({});

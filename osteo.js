@@ -20,6 +20,8 @@
   Osteo.Model = Backbone.Model.extend({
     defaultAutoSaveDelay: 500,
 
+    mixins: [],
+
     relations: {},
 
     root: null,
@@ -30,6 +32,7 @@
       if (options.root) this.root = options.root;
       this.autoSaveDelay = this.defaultAutoSaveDelay;
 
+      this.extendMixins();
       this.attachRelations();
 
       Backbone.Model.prototype.constructor.apply(this, arguments);
@@ -69,6 +72,10 @@
       this.debouncedSave();
 
       return true;
+    },
+
+    extendMixins: function() {
+      _.extend.apply(this, [this].concat(this.mixins));
     },
 
     associateRelations: function(response, root) {
@@ -111,10 +118,14 @@
   Osteo.Collection = Backbone.Collection.extend({
     model: Osteo.Model,
 
+    mixins: [],
+
     constructor: function(models, options) {
       options = options || {};
 
       if (options.root) this.root = options.root;
+
+      this.extendMixins();
 
       Backbone.Collection.prototype.constructor.apply(this, arguments);
     },
@@ -170,6 +181,10 @@
       return Osteo.Sideload.associate(response, root);
     },
 
+    extendMixins: function() {
+      _.extend.apply(this, [this].concat(this.mixins));
+    },
+
     _rootOptions: function(options) {
       if (this.root) {
         options.root = Osteo.Sideload.singularize(this.root);
@@ -180,6 +195,7 @@
   });
 
   var Route = Osteo.Route = function() {
+    this.extendMixins();
   };
 
   Route.reset = function() {
@@ -193,6 +209,8 @@
   };
 
   _.extend(Route.prototype, {
+    mixins: [],
+
     load: function(params) {
       var promise = new Promise(function(resolve, reject) {
         resolve(params);
@@ -221,7 +239,11 @@
 
     unloadData:  function() {},
     unloadView:  function() {},
-    unloadError: function() {}
+    unloadError: function() {},
+
+    extendMixins: function() {
+      _.extend.apply(this, [this].concat(this.mixins));
+    }
   });
 
   Route.extend = Backbone.Model.extend;
@@ -229,8 +251,12 @@
   Osteo.Router = Backbone.Router.extend({
     handlers: {},
 
+    mixins: [],
+
     initialize: function() {
       this.on('route', this.handle, this);
+
+      this.extendMixins();
     },
 
     start: function(options) {
@@ -275,6 +301,10 @@
       options = _.defaults({}, options, { trigger: true });
 
       this.navigate(path, options);
+    },
+
+    extendMixins: function() {
+      _.extend.apply(this, [this].concat(this.mixins));
     }
   });
 

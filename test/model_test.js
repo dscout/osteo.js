@@ -15,18 +15,6 @@ describe('Osteo.Model', function() {
     });
   });
 
-  describe('#autoSave', function() {
-    it('stubs an autoSave method', function() {
-      var model = new Osteo.Model({});
-      model.autoSaveDelay = 0;
-      model.save = function() {
-        return true;
-      };
-
-      return expect(model.autoSave()).to.be.true;
-    });
-  });
-
   describe('#parse', function() {
     it('attempts to extract attributes from a root object', function() {
       var model = new Osteo.Model({}, { root: 'post' });

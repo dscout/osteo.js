@@ -18,8 +18,6 @@
   };
 
   Osteo.Model = Backbone.Model.extend({
-    defaultAutoSaveDelay: 500,
-
     mixins: [],
 
     relations: {},
@@ -30,7 +28,6 @@
       options = options || {};
 
       if (options.root) this.root = options.root;
-      this.autoSaveDelay = this.defaultAutoSaveDelay;
 
       this.extendMixins();
       this.attachRelations();
@@ -62,16 +59,6 @@
       this.resetRelations(attributes);
 
       return Backbone.Model.prototype.set.apply(this, arguments);
-    },
-
-    autoSave: function() {
-      if (!this.debouncedSave) {
-        this.debouncedSave = _.debounce(this.save, this.autoSaveDelay);
-      }
-
-      this.debouncedSave();
-
-      return true;
     },
 
     extendMixins: function() {
@@ -383,6 +370,20 @@
       var key = relKey + '_ids';
 
       return object[key] ? key : relKey + '_id';
+    }
+  };
+
+  Osteo.AutoSaveMixin = {
+    autoSaveDelay: 500,
+
+    autoSave: function() {
+      if (!this.debouncedSave) {
+        this.debouncedSave = _.debounce(this.save, this.autoSaveDelay);
+      }
+
+      this.debouncedSave();
+
+      return true;
     }
   };
 

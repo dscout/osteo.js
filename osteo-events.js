@@ -26,6 +26,8 @@ var Events = {
   },
 
   trigger: function(name) {
+    if (!this._events) return this;
+
     var args   = [].slice.call(arguments, 1);
     var events = this._events[name];
 

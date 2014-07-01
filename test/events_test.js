@@ -10,7 +10,7 @@ describe('Extend', function() {
     foo = _.extend({}, Events);
   });
 
-  it ('registers and listens for events', function() {
+  it('registers and listens for events', function() {
     var callbackA = sinon.spy();
     var callbackB = sinon.spy();
 
@@ -25,7 +25,7 @@ describe('Extend', function() {
     expect(callbackB.calledWith('value')).to.be.true;
   });
 
-  it ('removes registered event listeners', function() {
+  it('removes registered event listeners', function() {
     var callbackA = sinon.spy();
     var callbackB = sinon.spy();
 
@@ -43,5 +43,13 @@ describe('Extend', function() {
     foo.trigger('change');
 
     expect(callbackB.calledTwice).to.be.true
+  });
+
+  it('ignores triggering without any listeners', function() {
+    trigger = function() {
+      foo.trigger('change:field')
+    }
+
+    expect(trigger).not.to.throw(Error);
   });
 });

@@ -1,8 +1,11 @@
 var extend = require('./lib/extend');
+var merge  = require('./lib/merge');
 var Events = require('./osteo-events');
 
 var Model = function(attributes, options) {
   this.attributes = attributes || {};
+
+  this.initialize.apply(this, arguments);
 }
 
 Model.extend = extend;
@@ -11,50 +14,75 @@ Model.extend = extend;
 // fetch
 // save
 // destroy
-// parse
-// clone
-// isNew
 // clear
-// unset
-// has
-// idAttribute
-// getId
+// parse
+// toJSON
 
-for (var prop in Events) {
-  Model.prototype[prop] = Events[prop];
-}
+merge(Model.prototype, Events, {
+  idAttribute: 'id',
 
-Model.prototype.get = function(key) {
-  return this.attributes[key];
-};
+  initialize: function() {
+  },
 
-Model.prototype.set = function(key, value) {
-  var attributes = {};
-  var anyChanges = false;
-  var currentVal;
+  getId: function() {
+    return this.attributes[this.idAttribute];
+  },
 
-  if (key === Object(key)) {
-    attributes = key;
-  } else {
-    attributes[key] = value;
-  }
+  isNew: function() {
+    return this.getId() == null;
+  },
 
-  for (var key in attributes) {
-    currentVal = this.attributes[key];
+  clone: function() {
+    return new this.constructor(this.attributes);
+  },
 
-    if (currentVal !== attributes[key]) {
-      anyChanges = true
+  get: function(key) {
+    return this.attributes[key];
+  },
 
-      this.attributes[key] = attributes[key];
-      this.trigger('change:' + key, this);
+  has: function(key) {
+    return this.get(key) != null;
+  },
+
+  set: function(key, value) {
+    var attributes = {};
+    var anyChanges = false;
+    var currentVal;
+
+    if (key === Object(key)) {
+      attributes = key;
+    } else {
+      attributes[key] = value;
     }
-  }
 
-  if (anyChanges) {
-    this.trigger('change', this);
-  }
+    for (var key in attributes) {
+      currentVal = this.attributes[key];
 
-  return this;
-};
+      if (currentVal !== attributes[key]) {
+        anyChanges = true
+
+        this.attributes[key] = attributes[key];
+        this.trigger('change:' + key, this);
+      }
+    }
+
+    if (anyChanges) {
+      this.trigger('change', this);
+    }
+
+    return this;
+  },
+
+  unset: function(key, options) {
+    if (this.has(key)) {
+      delete this.attributes[key];
+
+      this.trigger('change:' + key, this);
+      this.trigger('change', this);
+    }
+
+    return this;
+  }
+});
 
 module.exports = Model;

@@ -7,16 +7,10 @@
   "latedef": true,
   "newcap": false,
   "noarg": true,
-  "quotmark": "single",
   "trailing": true,
   "undef": true,
   "unused": false,
   "globals": {
-    "$": true,
-    "_": true,
-    "Backbone": true,
-    "Osteo": true,
-    "Promise": true,
     "define": true
   }
 }

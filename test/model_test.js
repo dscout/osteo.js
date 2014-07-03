@@ -49,8 +49,6 @@ describe('Model', function() {
       var foo = new Foo({ name: 'alpha' });
       var bar = foo.clone();
 
-      console.log(foo.constructor);
-
       expect(bar.get('name')).to.eq(foo.get('name'));
     });
   });
@@ -132,14 +130,6 @@ describe('Model', function() {
 
   describe('#unset', function() {
     it('removes an attribute from the model', function() {
-      var foo = new Foo({ name: 'alpha' });
-
-      foo.unset('name');
-
-      expect(foo.has('name')).to.be.false;
-    });
-
-    it('triggers change events', function() {
       var foo     = new Foo({ name: 'alpha' });
       var nameSpy = sinon.spy();
       var allSpy  = sinon.spy();
@@ -149,8 +139,28 @@ describe('Model', function() {
 
       foo.unset('name');
 
+      expect(foo.has('name')).to.be.false;
       expect(nameSpy.called).to.be.true;
       expect(allSpy.called).to.be.true;
+    });
+  });
+
+  describe('#clear', function() {
+    it('clears all attributes on the model', function() {
+      var foo     = new Foo({ id: 1, name: 'alpha' });
+      var nameSpy = sinon.spy();
+      var anySpy  = sinon.spy();
+
+      foo.on('change:name', nameSpy);
+      foo.on('change', anySpy);
+
+      foo.clear();
+
+      expect(foo.get('id')).to.be.undefined;
+      expect(foo.get('name')).to.be.undefined;
+
+      expect(nameSpy.calledOnce).to.be.true;
+      expect(anySpy.calledOnce).to.be.true;
     });
   });
 });

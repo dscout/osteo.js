@@ -6,7 +6,7 @@ var Model = function(attributes, options) {
   this.attributes = attributes || {};
 
   this.initialize.apply(this, arguments);
-}
+};
 
 Model.extend = extend;
 
@@ -14,7 +14,6 @@ Model.extend = extend;
 // fetch
 // save
 // destroy
-// clear
 // parse
 // toJSON
 
@@ -29,7 +28,7 @@ merge(Model.prototype, Events, {
   },
 
   isNew: function() {
-    return this.getId() == null;
+    return !this.getId();
   },
 
   clone: function() {
@@ -41,7 +40,9 @@ merge(Model.prototype, Events, {
   },
 
   has: function(key) {
-    return this.get(key) != null;
+    var value = this.get(key);
+
+    return value !== null && value !== undefined;
   },
 
   set: function(key, value) {
@@ -55,14 +56,14 @@ merge(Model.prototype, Events, {
       attributes[key] = value;
     }
 
-    for (var key in attributes) {
-      currentVal = this.attributes[key];
+    for (var prop in attributes) {
+      currentVal = this.attributes[prop];
 
-      if (currentVal !== attributes[key]) {
-        anyChanges = true
+      if (currentVal !== attributes[prop]) {
+        anyChanges = true;
 
-        this.attributes[key] = attributes[key];
-        this.trigger('change:' + key, this);
+        this.attributes[prop] = attributes[prop];
+        this.trigger('change:' + prop, this);
       }
     }
 
@@ -82,6 +83,16 @@ merge(Model.prototype, Events, {
     }
 
     return this;
+  },
+
+  clear: function(options) {
+    var overwritten = {};
+
+    for (var key in this.attributes) {
+      overwritten[key] = undefined;
+    }
+
+    return this.set(overwritten);
   }
 });
 

@@ -39,6 +39,6 @@ var Events = {
 
     return this;
   }
-}
+};
 
 module.exports = Events;

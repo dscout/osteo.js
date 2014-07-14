@@ -92,4 +92,74 @@ describe('Collection', function() {
       expect(foo.get(1)).not.to.be.undefined;
     });
   });
+
+  describe('#at', function() {
+    it('retrives a model by position', function() {
+      var foo = new Foo([{ id: 100 }, { id: 200 }, { id: 300 }]);
+
+      expect(foo.at(0).get('id')).to.eq(100);
+      expect(foo.at(1).get('id')).to.eq(200);
+      expect(foo.at(2).get('id')).to.eq(300);
+      expect(foo.at(4)).to.be.undefined;
+    });
+  });
+
+  describe('#length', function() {
+    it('keeps a length property in sync', function() {
+      var foo = new Foo();
+
+      expect(foo.length).to.eq(0);
+
+      foo.add({ id: 100 });
+
+      expect(foo.length).to.eq(1);
+    });
+  });
+
+  describe('#sort', function() {
+    it('sorts models by the comparitor', function() {
+      var foo = new Foo([{ id: 200 }, { id: 300 }, { id: 100 }]);
+
+      foo.comparitor = function(a, b) {
+        return a.get('id') - b.get('id');
+      };
+
+      foo.sort()
+
+      var ids = foo.models.map(function(model) { return model.get('id') });
+
+      expect(ids).to.eql([100, 200, 300]);
+    });
+
+    it('maintains a sort order when a comparitor is present', function() {
+      var foo = new Foo([{ id: 200 }]);
+
+      foo.comparitor = function(a, b) {
+        return a.get('id') - b.get('id');
+      };
+
+      foo.add({ id: 100 });
+
+      var ids = foo.models.map(function(model) { return model.get('id') });
+
+      expect(ids).to.eql([100, 200]);
+    });
+
+    it('triggers a sort event when a comparitor is present', function() {
+      var foo = new Foo();
+      var spy = sinon.spy();
+
+      foo.on('sort', spy);
+
+      foo.sort();
+      foo.comparitor = function() {};
+      foo.sort();
+
+      expect(spy.calledOnce).to.be.true;
+
+      foo.sort({ silent: true });
+
+      expect(spy.calledOnce).to.be.true;
+    });
+  });
 });

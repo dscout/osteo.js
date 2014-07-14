@@ -3,24 +3,21 @@ var merge  = require('./lib/merge');
 var Events = require('./osteo-events');
 var Model  = require('./osteo-model');
 
+// url
+// parse
+// dump -> toJSON
 // toJSON
 // sync
-// add
+// fetch
+// create
+//
 // remove
 // reset
 // set
-// get
-// at
-// length
-// comparator
-// sort
-// url
-// parse
 // clone
-// fetch
-// create
 
 var Collection = function(models, options) {
+  this.length = 0;
   this.models = [];
   this._byId  = {};
 
@@ -36,6 +33,10 @@ merge(Collection.prototype, Events, {
 
   get: function(id) {
     return this._byId[id];
+  },
+
+  at: function(index) {
+    return this.models[index];
   },
 
   add: function(models) {
@@ -58,6 +59,23 @@ merge(Collection.prototype, Events, {
       this._cacheLookup(vivified);
       this.trigger('add', vivified, this);
     }, this);
+
+    this.length = this.models.length;
+    this.sort();
+
+    return this;
+  },
+
+  sort: function(options) {
+    options = options || {};
+
+    if (this.comparitor) {
+      this.models.sort(this.comparitor.bind(this));
+    }
+
+    if (this.comparitor && !options.silent) {
+      this.trigger('sort', this);
+    }
 
     return this;
   },

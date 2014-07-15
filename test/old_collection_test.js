@@ -40,22 +40,6 @@ describe('Osteo.Collection', function() {
     });
   });
 
-  describe('#parse', function() {
-    it('extracts data from the root key', function() {
-      var collection = new Osteo.Collection([], { root: 'posts' }),
-          payload    = { posts: [{ id: 1 }, { id: 2 }] };
-
-      expect(collection.parse(payload).length).to.eq(2);
-    });
-
-    it('falls back to the response without a root', function() {
-      var collection = new Osteo.Collection([], { root: 'posts' }),
-          payload = [{ id: 1 }, { id: 2 }];
-
-      expect(collection.parse(payload)).to.eql(payload);
-    });
-  });
-
   describe('#set', function() {
     it('correctly merges models with a root', function() {
       var payload    = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }],
@@ -83,22 +67,6 @@ describe('Osteo.Collection', function() {
       var model = coll.create({ id: 1 });
 
       expect(model.root).to.eq('post')
-    });
-  });
-
-  describe('#toJSON', function() {
-    it('flattens model attributes', function() {
-      var models = [{ id: 1 }, { id: 2 }],
-          collection = new Osteo.Collection(models, { root: 'posts' });
-
-      expect(collection.toJSON()).to.eql(models);
-    });
-
-    it('flattens models into the root namespace', function() {
-      var models = [{ id: 1 }, { id: 2 }],
-          collection = new Osteo.Collection(models, { root: 'posts' });
-
-      expect(collection.toJSON({ rooted: true })).to.eql({ posts: models });
     });
   });
 

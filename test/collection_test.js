@@ -28,6 +28,44 @@ describe('Collection', function() {
     });
   });
 
+  describe('#parse', function() {
+    it('extracts data from the root key', function() {
+      var foo     = new Foo([], { root: 'posts' });
+      var payload = { posts: [{ id: 1 }, { id: 2 }] };
+
+      expect(foo.parse(payload).length).to.eq(2);
+    });
+
+    it('falls back to the response without a root', function() {
+      var foo     = new Foo([], { root: 'posts' });
+      var payload = [{ id: 1 }, { id: 2 }];
+
+      expect(foo.parse(payload)).to.eql(payload);
+    });
+  });
+
+  describe('#dump', function() {
+    it('flattens model attributes', function() {
+      var models = [{ id: 1 }, { id: 2 }],
+          foo    = new Foo(models, { root: 'posts' });
+
+      expect(foo.dump()).to.eql(models);
+    });
+
+    it('flattens models into the root namespace', function() {
+      var models = [{ id: 1 }, { id: 2 }],
+          foo    = new Foo(models, { root: 'posts' });
+
+      expect(foo.dump({ rooted: true })).to.eql({ posts: models });
+    });
+
+    it('is aliased as toJSON', function() {
+      var foo = new Foo([], { root: 'posts' });
+
+      expect(foo.toJSON({ rooted: true })).to.eql(foo.dump({ rooted: true }));
+    });
+  });
+
   describe('#add', function() {
     it('vivifies attributes as models', function() {
       var foo = new Foo();

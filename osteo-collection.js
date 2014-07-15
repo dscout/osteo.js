@@ -4,8 +4,6 @@ var Events = require('./osteo-events');
 var Model  = require('./osteo-model');
 
 // url
-// parse
-// dump -> toJSON
 // toJSON
 // sync
 // fetch
@@ -17,9 +15,12 @@ var Model  = require('./osteo-model');
 // clone
 
 var Collection = function(models, options) {
+  options = options || {};
+
   this.length = 0;
   this.models = [];
   this._byId  = {};
+  this.root   = options.root;
 
   if (models) {
     this.add(models);
@@ -31,12 +32,42 @@ Collection.extend = extend;
 merge(Collection.prototype, Events, {
   model: Model,
 
+  root: null,
+
   get: function(id) {
     return this._byId[id];
   },
 
   at: function(index) {
     return this.models[index];
+  },
+
+  parse: function(response) {
+    if (response && this.root && response[this.root]) {
+      return response[this.root];
+    } else {
+      return response;
+    }
+  },
+
+  dump: function(options) {
+    var object = {};
+
+    var models = this.models.map(function(model) {
+      return merge({}, model.attributes);
+    });
+
+    if (options && options.rooted) {
+      object[this.root] = models;
+
+      return object;
+    } else {
+      return models;
+    }
+  },
+
+  toJSON: function() {
+    return this.dump.apply(this, arguments);
   },
 
   add: function(models) {

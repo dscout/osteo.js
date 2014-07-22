@@ -79,6 +79,14 @@ describe('Collection', function() {
       expect(foo.models.length).to.eq(3);
     });
 
+    it('does not add a model with the same id multiple times', function() {
+      var foo = new Foo();
+
+      foo.add([{ id: 1 }, { id: 1 }]);
+
+      expect(foo.models.length).to.eq(1);
+    });
+
     it('stores existing models directly', function() {
       var foo   = new Foo();
       var model = new Model({ id: 1, name: 'alpha' });
@@ -107,6 +115,31 @@ describe('Collection', function() {
       foo.add([{ id: 1 }, { id: 2 }]);
 
       expect(spy.calledTwice).to.be.true;
+    });
+  });
+
+  describe('#lookup', function() {
+    it('returns existing models', function() {
+      var collection = new Foo([{ id: 1, name: 'osteo' }]);
+
+      expect(collection.lookup(1).get('name')).to.eq('osteo');
+    });
+
+    it('returns a new model instance without an existing model', function() {
+      var collection = new Foo();
+
+      var found = collection.lookup(1, { name: 'osteo' });
+
+      expect(found.id).to.eq(1);
+      expect(found.get('name')).to.eq('osteo');
+      expect(found.collection).to.eql(collection);
+      expect(collection.get(1)).not.to.be.undefined;
+    });
+
+    it('gracefully handles undefined attributes', function() {
+      var collection = new Foo();
+
+      expect(collection.lookup(1).id).to.eq(1);
     });
   });
 

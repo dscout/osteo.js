@@ -1,10 +1,10 @@
-var extend = require('./lib/extend');
-var merge  = require('./lib/merge');
-var Events = require('./osteo-events');
-var Model  = require('./osteo-model');
+var extend   = require('./lib/extend');
+var defaults = require('./lib/defaults');
+var merge    = require('./lib/merge');
+var Events   = require('./osteo-events');
+var Model    = require('./osteo-model');
 
 // url
-// toJSON
 // sync
 // fetch
 // create
@@ -19,8 +19,8 @@ var Collection = function(models, options) {
 
   this.length = 0;
   this.models = [];
-  this._byId  = {};
   this.root   = options.root;
+  this._byId  = {};
 
   if (models) {
     this.add(models);
@@ -70,6 +70,14 @@ merge(Collection.prototype, Events, {
     return this.dump.apply(this, arguments);
   },
 
+  lookup: function(id, attributes) {
+    var defaulted = defaults((attributes || {}), { id: id });
+
+    this.add(defaulted);
+
+    return this.get(id);
+  },
+
   add: function(models) {
     var vivified;
 
@@ -84,11 +92,13 @@ merge(Collection.prototype, Events, {
         vivified = new this.model(attributes);
       }
 
-      vivified.collection = this;
+      if (!this.get(vivified.id)) {
+        vivified.collection = this;
 
-      this.models.push(vivified);
-      this._cacheLookup(vivified);
-      this.trigger('add', vivified, this);
+        this.models.push(vivified);
+        this._cacheLookup(vivified);
+        this.trigger('add', vivified, this);
+      }
     }, this);
 
     this.length = this.models.length;

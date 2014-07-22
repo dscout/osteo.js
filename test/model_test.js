@@ -28,6 +28,12 @@ describe('Model', function() {
 
       expect(foo.getId()).to.eq(101);
     });
+
+    it('caches the id attribute', function() {
+      var foo = new Foo({ id: 100 });
+
+      expect(foo.id).to.eq(100);
+    });
   });
 
   describe('#isNew', function() {

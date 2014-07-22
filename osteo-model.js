@@ -3,7 +3,9 @@ var merge  = require('./lib/merge');
 var Events = require('./osteo-events');
 
 var Model = function(attributes, options) {
-  this.attributes = attributes || {};
+  this.attributes = {}
+
+  this.set(attributes || {});
 
   this.initialize.apply(this, arguments);
 };
@@ -50,6 +52,8 @@ merge(Model.prototype, Events, {
     var anyChanges = false;
     var currentVal;
 
+    if (key == null) return this;
+
     if (key === Object(key)) {
       attributes = key;
     } else {
@@ -65,6 +69,10 @@ merge(Model.prototype, Events, {
         this.attributes[prop] = attributes[prop];
         this.trigger('change:' + prop, this);
       }
+    }
+
+    if (attributes[this.idAttribute]) {
+      this.id = attributes[this.idAttribute];
     }
 
     if (anyChanges) {

@@ -3,9 +3,14 @@ var merge  = require('./lib/merge');
 var Events = require('./osteo-events');
 
 var Model = function(attributes, options) {
+  options = options || {};
   this.attributes = {}
 
-  this.set(attributes || {});
+  if (options.root) {
+    this.root = options.root;
+  }
+
+  this.set(this.parse(attributes || {}));
 
   this.initialize.apply(this, arguments);
 };
@@ -16,11 +21,11 @@ Model.extend = extend;
 // fetch
 // save
 // destroy
-// parse
-// toJSON
 
 merge(Model.prototype, Events, {
   idAttribute: 'id',
+
+  root: null,
 
   initialize: function() {
   },
@@ -45,6 +50,30 @@ merge(Model.prototype, Events, {
     var value = this.get(key);
 
     return value !== null && value !== undefined;
+  },
+
+  parse: function(response) {
+    if (response && this.root && response[this.root]) {
+      return response[this.root];
+    } else {
+      return response;
+    }
+  },
+
+  dump: function() {
+    var attributes = merge({}, this.attributes);
+    var rooted     = {};
+
+    if (this.root) {
+      rooted[this.root] = attributes;
+      return rooted;
+    } else {
+      return attributes;
+    }
+  },
+
+  toJSON: function() {
+    this.dump.apply(this, arguments);
   },
 
   set: function(key, value) {

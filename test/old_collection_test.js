@@ -15,31 +15,6 @@ describe('Osteo.Collection', function() {
     });
   });
 
-  describe('#lookup', function() {
-    it('returns existing models', function() {
-      var collection = new Osteo.Collection([{ id: 1, name: 'osteo' }]);
-
-      expect(collection.lookup(1).get('name')).to.eq('osteo');
-    });
-
-    it('returns a new model instance without an existing model', function() {
-      var collection = new Osteo.Collection([]);
-
-      var found = collection.lookup(1, { name: 'osteo' });
-
-      expect(found.id).to.eq(1);
-      expect(found.get('name')).to.eq('osteo');
-      expect(found.collection).to.eql(collection);
-      expect(collection.get(1)).not.to.be.undefined;
-    });
-
-    it('gracefully handles undefined attributes', function() {
-      var collection = new Osteo.Collection([]);
-
-      expect(collection.lookup(1).id).to.eq(1);
-    });
-  });
-
   describe('#set', function() {
     it('correctly merges models with a root', function() {
       var payload    = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }],
@@ -67,16 +42,6 @@ describe('Osteo.Collection', function() {
       var model = coll.create({ id: 1 });
 
       expect(model.root).to.eq('post')
-    });
-  });
-
-  describe('.root', function() {
-    it('passes root options through to models', function() {
-      var collection = new Osteo.Collection([], { root: 'posts' }),
-          models = collection.set({ posts: [{ id: 2 }, { id: 3 }]}, { parse: true });
-
-      expect(models[0].root).to.eq('post');
-      expect(models[1].root).to.eq('post');
     });
   });
 });

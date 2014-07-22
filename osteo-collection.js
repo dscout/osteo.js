@@ -1,8 +1,9 @@
-var extend   = require('./lib/extend');
-var defaults = require('./lib/defaults');
-var merge    = require('./lib/merge');
-var Events   = require('./osteo-events');
-var Model    = require('./osteo-model');
+var defaults  = require('./lib/defaults');
+var extend    = require('./lib/extend');
+var inflector = require('./lib/inflector');
+var merge     = require('./lib/merge');
+var Events    = require('./osteo-events');
+var Model     = require('./osteo-model');
 
 // url
 // sync
@@ -43,11 +44,19 @@ merge(Collection.prototype, Events, {
   },
 
   parse: function(response) {
+    var parsed;
+
     if (response && this.root && response[this.root]) {
-      return response[this.root];
+      parsed = response[this.root];
     } else {
-      return response;
+      parsed = response;
     }
+
+    if (!Array.isArray(parsed)) {
+      parsed = [parsed];
+    }
+
+    return parsed;
   },
 
   dump: function(options) {
@@ -78,25 +87,24 @@ merge(Collection.prototype, Events, {
     return this.get(id);
   },
 
-  add: function(models) {
+  add: function(models, options) {
     var vivified;
 
-    if (!Array.isArray(models)) {
-      models = [models];
-    }
+    models  = this.parse(models);
+    options = this._rootedOptions(options || {});
 
     models.forEach(function(attributes) {
       if (attributes instanceof this.model) {
         vivified = attributes;
       } else {
-        vivified = new this.model(attributes);
+        vivified = new this.model(attributes, options);
       }
 
       if (!this.get(vivified.id)) {
         vivified.collection = this;
 
-        this.models.push(vivified);
-        this._cacheLookup(vivified);
+        this._storeModel(vivified);
+        this._cacheModel(vivified);
         this.trigger('add', vivified, this);
       }
     }, this);
@@ -121,10 +129,22 @@ merge(Collection.prototype, Events, {
     return this;
   },
 
-  _cacheLookup: function(model) {
+  _storeModel: function(model) {
+    this.models.push(model);
+  },
+
+  _cacheModel: function(model) {
     var idAttr = this.model.prototype.idAttribute;
 
     this._byId[model.get(idAttr)] = model;
+  },
+
+  _rootedOptions: function(options) {
+    if (this.root) {
+      options.root = inflector.singularize(this.root);
+    }
+
+    return options;
   }
 });
 

@@ -18,6 +18,23 @@ describe('Model', function() {
     });
   });
 
+  describe('#root', function() {
+    it('pulls the root out of options', function() {
+      var foo = new Foo({ post: { id: 100, name: 'stuff' }}, { root: 'post' });
+
+      expect(foo.root).to.eq('post');
+      expect(foo.get('name')).to.eq('stuff');
+    });
+  });
+
+  describe('#dump', function() {
+    it('wraps the attributes in the root', function() {
+      var model = new Foo({ id: 1 }, { root: 'post' });
+
+      expect(model.dump()).to.eql({ post: { id: 1 } });
+    });
+  });
+
   describe('#getId', function() {
     it('is the value of the id attribute', function() {
       var foo = new Foo({ id: 100, _id: 101 });

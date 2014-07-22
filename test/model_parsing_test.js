@@ -45,16 +45,6 @@ describe('Osteo.Model', function() {
     });
   });
 
-  describe('#toJSON', function() {
-    it('wraps the attributes in the root', function() {
-      var model = new Osteo.Model({ id: 1 });
-
-      model.root = 'post';
-
-      expect(model.toJSON()).to.eql({ post: { id: 1 } });
-    });
-  });
-
   describe('#relations', function() {
     var Post = Osteo.Model.extend({
       relations: function() {

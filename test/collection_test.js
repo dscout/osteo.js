@@ -106,6 +106,14 @@ describe('Collection', function() {
       expect(model.collection).to.eql(foo);
     });
 
+    it('passes the singluar root through to models', function() {
+      var foo    = new Foo([], { root: 'posts' });
+      var models = foo.add({ posts: [{ id: 2 }, { id: 3 }]});
+
+      expect(foo.models[0].root).to.eq('post');
+      expect(foo.models[1].root).to.eq('post');
+    });
+
     it('triggers an `add` event for each model', function() {
       var foo = new Foo();
       var spy = sinon.spy();

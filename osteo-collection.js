@@ -13,7 +13,6 @@ var Model     = require('./osteo-model');
 // remove
 // reset
 // set
-// clone
 
 var Collection = function(models, options) {
   options = options || {};

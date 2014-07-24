@@ -67,15 +67,6 @@ describe('Model', function() {
     });
   });
 
-  describe('#clone', function() {
-    it('creates a copy of the model\'s attributes', function() {
-      var foo = new Foo({ name: 'alpha' });
-      var bar = foo.clone();
-
-      expect(bar.get('name')).to.eq(foo.get('name'));
-    });
-  });
-
   describe('#get', function() {
     it('fetches set properties', function() {
       var foo = new Foo({ name: 'alpha' });

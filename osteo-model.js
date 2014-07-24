@@ -38,10 +38,6 @@ merge(Model.prototype, Events, {
     return !this.getId();
   },
 
-  clone: function() {
-    return new this.constructor(this.attributes);
-  },
-
   get: function(key) {
     return this.attributes[key];
   },

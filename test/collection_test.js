@@ -6,9 +6,18 @@ var Model      = require('../osteo-model');
 describe('Collection', function() {
   var Foo = Collection.extend({});
 
+  describe('#root', function() {
+    it('does not override without a root in options', function() {
+      var Coll = Collection.extend({ root: 'posts' });
+      var coll = new Coll();
+
+      expect(coll.root).to.eq('posts');
+    });
+  });
+
   describe('#model', function() {
     it('defaults to the osteo model', function() {
-      var foo = new Foo()
+      var foo = new Foo();
 
       expect(foo.model).to.eql(Model);
     });

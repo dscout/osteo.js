@@ -17,10 +17,13 @@ var Model     = require('./osteo-model');
 var Collection = function(models, options) {
   options = options || {};
 
-  this.length = 0;
-  this.models = [];
-  this.root   = options.root;
-  this._byId  = {};
+  this.length   = 0;
+  this.models   = [];
+  this._idCache = {};
+
+  if (options.root) {
+    this.root = options.root;
+  }
 
   if (models) {
     this.add(models);
@@ -35,7 +38,7 @@ merge(Collection.prototype, Events, {
   root: null,
 
   get: function(id) {
-    return this._byId[id];
+    return this._idCache[id];
   },
 
   at: function(index) {
@@ -135,7 +138,7 @@ merge(Collection.prototype, Events, {
   _cacheModel: function(model) {
     var idAttr = this.model.prototype.idAttribute;
 
-    this._byId[model.get(idAttr)] = model;
+    this._idCache[model.get(idAttr)] = model;
   },
 
   _rootedOptions: function(options) {

@@ -135,6 +135,46 @@ describe('Collection', function() {
     });
   });
 
+  describe('#remove', function() {
+    it('removes the model from the collection', function() {
+      var foo   = new Foo([{ id: 100 }, { id: 101 }, { id: 102 }]);
+      var model = foo.get(100);
+
+      foo.remove(model);
+
+      expect(foo.length).to.eq(2);
+      expect(foo.models).not.to.include(model);
+      expect(foo.get(100)).to.be.undefined;
+
+      foo.remove([foo.get(101), foo.get(102)]);
+
+      expect(foo.length).to.eq(0);
+    });
+
+    it('safely ignores models that are not in the colleciton', function() {
+      var foo = new Foo();
+      var model = new Model({ id: 100 });
+
+      foo.remove(model);
+    });
+
+    it('triggers a remove event for each model', function() {
+      var foo    = new Foo();
+      var modelA = new Model({ id: 100 });
+      var modelB = new Model({ id: 101 });
+      var spyA   = sinon.spy();
+      var spyB   = sinon.spy();
+
+      modelA.on('remove', spyA);
+      modelB.on('remove', spyB);
+
+      foo.remove([modelA, modelB]);
+
+      expect(spyA.calledWith(modelA, foo, {})).to.be.true;
+      expect(spyB.calledWith(modelB, foo, {})).to.be.true;
+    });
+  });
+
   describe('#lookup', function() {
     it('returns existing models', function() {
       var collection = new Foo([{ id: 1, name: 'osteo' }]);

@@ -10,7 +10,6 @@ var Model     = require('./osteo-model');
 // fetch
 // create
 //
-// remove
 // reset
 // set
 
@@ -115,6 +114,23 @@ merge(Collection.prototype, Events, {
     this.sort();
 
     return this;
+  },
+
+  remove: function(models, options) {
+    options = options || {};
+
+    if (!Array.isArray(models)) {
+      models = [models];
+    }
+
+    models.forEach(function(model) {
+      delete this._idCache[model.id];
+      this.models.splice(this.models.indexOf(model), 1);
+
+      model.trigger('remove', model, this, options);
+    }.bind(this));
+
+    this.length = this.models.length;
   },
 
   sort: function(options) {

@@ -1,13 +1,13 @@
-var _      = require('underscore');
 var expect = require('chai').expect;
 var sinon  = require('sinon');
+var merge  = require('../lib/merge');
 var Events = require('../osteo-events');
 
 describe('Extend', function() {
   var foo;
 
   beforeEach(function() {
-    foo = _.extend({}, Events);
+    foo = merge({}, Events);
   });
 
   it('registers and listens for events', function() {

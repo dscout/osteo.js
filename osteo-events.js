@@ -1,5 +1,3 @@
-var _ = require('underscore');
-
 var Events = {
   on: function(name, callback, context) {
     this._events = (this._events || {});
@@ -17,7 +15,7 @@ var Events = {
       delete this._events[name];
     }
 
-    this._events[name] = _.select(events, function(event) {
+    this._events[name] = events.filter(function(event) {
       return callback && callback !== event.callback ||
              context  && context  !== event.context;
     });
@@ -32,7 +30,7 @@ var Events = {
     var events = this._events[name];
 
     if (events) {
-      _.each(events, function(event) {
+      events.forEach(function(event) {
         event.callback.apply(event.context, args);
       });
     }

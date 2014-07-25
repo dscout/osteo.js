@@ -1,20 +1,15 @@
-var merge  = require('./lib/merge');
-var Events = require('./osteo-events');
+var merge    = require('./lib/merge');
+var Promise  = require('./lib/promise');
+var Response = require('./osteo-response');
 
 var Request = function(method, url) {
   this.method = method;
   this.url    = url;
   this.data   = {};
   this.header = {};
-
-  this.on('end', function() {
-    // var res = new Response(this);
-    // if ('HEAD' === method) res.text = null;
-    // this.callback(null, res);
-  }.bind(this));
 };
 
-merge(Request.prototype, Events, {
+merge(Request.prototype, {
   set: function(field, value) {
     this.header[field] = value;
 
@@ -28,11 +23,21 @@ merge(Request.prototype, Events, {
   },
 
   end: function() {
-    var xhr = this.xhr = new XMLHttpRequest();
+    var xhr      = this.xhr = new XMLHttpRequest();
+    var promise  = new Promise();
+    var response = new Response(this);
 
-    xhr.onload    = function() {}; // resolve promise
-    xhr.onerror   = function() {}; // reject promise
-    xhr.ontimeout = function() {}; // reject promise
+    xhr.addEventListener('load', function() {
+      promise.fulfill(response);
+    });
+
+    xhr.addEventListener('error', function() {
+      promise.rejectl(response)
+    });
+
+    xhr.addEventListener('abort', function() {
+      promise.reject(response);
+    });
 
     if (this.isXDomainRequest()) {
       xhr.withCredentials = true;
@@ -46,8 +51,7 @@ merge(Request.prototype, Events, {
 
     xhr.send(this.serialized());
 
-    // TODO: Wrap this in a promise
-    return this;
+    return promise;
   },
 
   isXDomainRequest: function(hostname) {
@@ -58,10 +62,14 @@ merge(Request.prototype, Events, {
   },
 
   serialized: function() {
+    return this.parser()(this.data)
+  },
+
+  parser: function() {
     if (this.method !== 'GET' && this.method !== 'HEAD') {
-      return JSON.stringify(this.data);
+      return JSON.stringify
     } else {
-      return this.data;
+      return function(value) { return value; };
     }
   }
 });

@@ -4,7 +4,7 @@ var Events = require('./osteo-events');
 
 var Model = function(attributes, options) {
   options = options || {};
-  this.attributes = {}
+  this.attributes = {};
 
   if (options.root) {
     this.root = options.root;
@@ -77,7 +77,7 @@ merge(Model.prototype, Events, {
     var anyChanges = false;
     var currentVal;
 
-    if (key == null) return this;
+    if (key === null) return this;
 
     if (key === Object(key)) {
       attributes = key;

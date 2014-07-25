@@ -79,8 +79,9 @@ describe('Collection', function() {
     it('vivifies attributes as models', function() {
       var foo = new Foo();
 
-      foo.add([{ id: 1 }, { id: 2 }]);
+      var models = foo.add([{ id: 1 }, { id: 2 }]);
 
+      expect(models.length).to.eq(2);
       expect(foo.models.length).to.eq(2);
 
       foo.add({ id: 3, name: 'gamma' });

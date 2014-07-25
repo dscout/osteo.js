@@ -10,7 +10,6 @@ var Model     = require('./osteo-model');
 // fetch
 // create
 //
-// reset
 // set
 
 var Collection = function(models, options) {
@@ -89,7 +88,7 @@ merge(Collection.prototype, Events, {
   },
 
   add: function(models, options) {
-    var vivified;
+    var vivified, added = [];
 
     models  = this.parse(models);
     options = this._rootedOptions(options || {});
@@ -107,13 +106,15 @@ merge(Collection.prototype, Events, {
         this._storeModel(vivified);
         this._cacheModel(vivified);
         this.trigger('add', vivified, this);
+
+        added.push(vivified);
       }
     }, this);
 
     this.length = this.models.length;
     this.sort();
 
-    return this;
+    return added;
   },
 
   remove: function(models, options) {

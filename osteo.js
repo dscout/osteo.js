@@ -322,10 +322,6 @@ Osteo.Sideload = {
     });
   },
 
-  singularize: function(word) {
-    return word.replace(/s$/, '');
-  },
-
   _relKeys: function(payload, root) {
     var keys = {};
 
@@ -355,19 +351,5 @@ Osteo.Sideload = {
     var key = relKey + '_ids';
 
     return object[key] ? key : relKey + '_id';
-  }
-};
-
-Osteo.AutoSaveMixin = {
-  autoSaveDelay: 500,
-
-  autoSave: function() {
-    if (!this.debouncedSave) {
-      this.debouncedSave = _.debounce(this.save, this.autoSaveDelay);
-    }
-
-    this.debouncedSave();
-
-    return true;
   }
 };

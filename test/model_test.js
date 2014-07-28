@@ -27,6 +27,23 @@ describe('Model', function() {
     });
   });
 
+  describe('#parse', function() {
+    it('attempts to extract attributes from a root object', function() {
+      var model = new Foo({}, { root: 'post' });
+
+      expect(model.parse({ post: { id: 1 } })).to.eql({ id: 1 });
+      expect(model.parse({ id: 1 })).to.eql({ id: 1 });
+    });
+
+    it('does not extract from an empty response', function() {
+      var model = new Foo();
+
+      model.root = 'post';
+
+      expect(model.parse(undefined)).to.be.undefined;
+    });
+  });
+
   describe('#dump', function() {
     it('wraps the attributes in the root', function() {
       var model = new Foo({ id: 1 }, { root: 'post' });

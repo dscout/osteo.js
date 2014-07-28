@@ -1,6 +1,6 @@
 {
   "name": "osteo",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Opinionated Backbone",
   "main": "osteo.js",
   "directories": {

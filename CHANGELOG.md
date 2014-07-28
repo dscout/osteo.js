@@ -1,3 +1,8 @@
+## v0.8.1 (2014-07-28)
+
+* Support mixin extension for all constructors.
+* Move autoSave behavior into a mixin.
+
 ## v0.8.0 (2014-06-09)
 
 * Exporting with AMD, CommonJS, browser globals. This is not a breaking change,

@@ -60,7 +60,7 @@ merge(Request.prototype, {
     });
 
     xhr.addEventListener('error', function() {
-      promise.rejectl(response);
+      promise.reject(response);
     });
 
     xhr.addEventListener('abort', function() {

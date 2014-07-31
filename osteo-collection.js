@@ -1,9 +1,9 @@
-var defaults  = require('./lib/defaults');
-var extend    = require('./lib/extend');
-var inflector = require('./lib/inflector');
-var merge     = require('./lib/merge');
-var Events    = require('./osteo-events');
-var Model     = require('./osteo-model');
+var defaults     = require('./lib/defaults');
+var extend       = require('./lib/extend');
+var inflector    = require('./lib/inflector');
+var merge        = require('./lib/merge');
+var EventEmitter = require('events').EventEmitter;
+var Model        = require('./osteo-model');
 
 // url
 // sync
@@ -30,7 +30,7 @@ var Collection = function(models, options) {
 
 Collection.extend = extend;
 
-merge(Collection.prototype, Events, {
+merge(Collection.prototype, EventEmitter.prototype, {
   model: Model,
 
   root: null,
@@ -105,7 +105,7 @@ merge(Collection.prototype, Events, {
 
         this._storeModel(vivified);
         this._cacheModel(vivified);
-        this.trigger('add', vivified, this);
+        this.emit('add', vivified, this);
 
         added.push(vivified);
       }
@@ -128,7 +128,7 @@ merge(Collection.prototype, Events, {
       delete this._idCache[model.id];
       this.models.splice(this.models.indexOf(model), 1);
 
-      model.trigger('remove', model, this, options);
+      model.emit('remove', model, this, options);
     }.bind(this));
 
     this.length = this.models.length;
@@ -142,7 +142,7 @@ merge(Collection.prototype, Events, {
     }
 
     if (this.comparitor && !options.silent) {
-      this.trigger('sort', this);
+      this.emit('sort', this);
     }
 
     return this;

@@ -1,6 +1,6 @@
 var extend = require('./lib/extend');
 var merge  = require('./lib/merge');
-var Events = require('./osteo-events');
+var EventEmitter = require('events').EventEmitter;
 
 var Model = function(attributes, options) {
   options = options || {};
@@ -22,7 +22,7 @@ Model.extend = extend;
 // save
 // destroy
 
-merge(Model.prototype, Events, {
+merge(Model.prototype, EventEmitter.prototype, {
   idAttribute: 'id',
 
   root: null,
@@ -92,7 +92,7 @@ merge(Model.prototype, Events, {
         anyChanges = true;
 
         this.attributes[prop] = attributes[prop];
-        this.trigger('change:' + prop, this);
+        this.emit('change:' + prop, this);
       }
     }
 
@@ -101,7 +101,7 @@ merge(Model.prototype, Events, {
     }
 
     if (anyChanges) {
-      this.trigger('change', this);
+      this.emit('change', this);
     }
 
     return this;
@@ -111,8 +111,8 @@ merge(Model.prototype, Events, {
     if (this.has(key)) {
       delete this.attributes[key];
 
-      this.trigger('change:' + key, this);
-      this.trigger('change', this);
+      this.emit('change:' + key, this);
+      this.emit('change', this);
     }
 
     return this;

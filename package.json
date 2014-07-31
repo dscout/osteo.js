@@ -8,8 +8,8 @@
     "url": "https://github.com/dscout/osteo.js/issues"
   },
   "scripts": {
-    "test": "mocha --reporter spec test/model_test.js test/events_test.js test/collection_test.js test/request_test.js test/router_test.js",
-    "lint": "jshint osteo-events.js osteo-model.js osteo-collection.js osteo-request.js osteo-response.js osteo-router.js"
+    "test": "mocha --reporter spec test/model_test.js test/collection_test.js test/request_test.js test/router_test.js",
+    "lint": "jshint osteo-model.js osteo-collection.js osteo-request.js osteo-response.js osteo-router.js"
   },
   "repository": {
     "type": "git",

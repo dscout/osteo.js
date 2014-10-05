@@ -194,4 +194,62 @@ describe('Model', function() {
       expect(anySpy.calledOnce).to.be.true;
     });
   });
+
+  describe('#url', function() {
+    it('defaults to a function returning undefined', function() {
+      var foo = new Foo();
+
+      expect(foo.url()).to.be.undefined;
+    });
+  });
+
+  describe('#fetch', function() {
+    it('pulls remote data using the set url', function() {
+      var foo  = new Foo({ id: 1 });
+      var sync = sinon.spy();
+
+      Model.sync = sync;
+      foo.fetch();
+
+      expect(sync.calledOnce).to.be.true;
+      expect(sync.calledWith('read', foo)).to.be.true;
+    });
+  });
+
+  describe('#destroy', function() {
+    it('deletes the model remotely', function() {
+      var foo  = new Foo({ id: 1 });
+      var sync = sinon.spy();
+
+      Model.sync = sync;
+      foo.destroy();
+
+      expect(sync.calledOnce).to.be.true;
+      expect(sync.calledWith('delete', foo)).to.be.true;
+    });
+  });
+
+  describe('#save', function() {
+    it('updates the model and persists the changes', function() {
+      var foo  = new Foo({ id: 1 });
+      var sync = sinon.spy();
+
+      Model.sync = sync;
+      foo.save({ name: 'alpha' });
+
+      expect(foo.get('name')).to.eq('alpha');
+      expect(sync.calledOnce).to.be.true;
+      expect(sync.calledWith('update', foo)).to.be.true;
+    });
+
+    it('creates a model that has not been persisted', function() {
+      var foo  = new Foo();
+      var sync = sinon.spy();
+
+      Model.sync = sync;
+      foo.save();
+
+      expect(sync.calledWith('create', foo)).to.be.true;
+    });
+  });
 });

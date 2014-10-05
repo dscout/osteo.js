@@ -1,7 +1,7 @@
 var expect     = require('chai').expect;
 var sinon      = require('sinon');
-var Collection = require('../osteo-collection');
-var Model      = require('../osteo-model');
+var Collection = require('../lib/Collection');
+var Model      = require('../lib/Model');
 
 describe('Collection', function() {
   var Foo = Collection.extend({});

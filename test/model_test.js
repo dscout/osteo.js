@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 var sinon  = require('sinon');
-var Model  = require('../osteo-model');
+var Model  = require('../lib/Model');
 
 describe('Model', function() {
   var Foo = Model.extend({});

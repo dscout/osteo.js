@@ -2,14 +2,14 @@
   "name": "osteo",
   "version": "0.8.0",
   "author": "Parker Selbert",
-  "description": "Modular, data focused framework for modern web applications",
+  "description": "Data focused framework data centric web applications",
   "main": "osteo.js",
   "bugs": {
     "url": "https://github.com/dscout/osteo.js/issues"
   },
   "scripts": {
-    "test": "mocha --reporter spec test/model_test.js test/collection_test.js",
-    "lint": "jshint osteo-model.js osteo-collection.js"
+    "test": "mocha test/model_test.js test/collection_test.js test/osteo_test.js",
+    "lint": "jshint osteo.js osteo-model.js osteo-collection.js"
   },
   "repository": {
     "type": "git",

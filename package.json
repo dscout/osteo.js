@@ -24,11 +24,13 @@
   "devDependencies": {
     "browserify": "^4.0",
     "chai": "^1.9.1",
+    "envify": "^3.0.0",
     "jshint": "^2.5.1",
     "karma": "^0.12.24",
-    "karma-browserify": "^0.2.1",
+    "karma-browserifast": "^0.7.0",
     "karma-chai-sinon": "^0.1.3",
     "karma-firefox-launcher": "^0.1.3",
-    "karma-mocha": "^0.1.9"
+    "karma-mocha": "^0.1.9",
+    "proquest": "^0.1.1"
   }
 }

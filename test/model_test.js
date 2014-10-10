@@ -18,6 +18,24 @@ describe('Model', function() {
     });
   });
 
+  describe('#mixins', function() {
+    it('merges any mixins during construction', function() {
+      var SomeMixin = {
+        foo: function() {
+          return 'footastic';
+        }
+      };
+
+      var Mixinified = Model.extend({
+        mixins: [SomeMixin]
+      });
+
+      var instance = new Mixinified();
+
+      expect(instance.foo()).to.eq('footastic');
+    });
+  });
+
   describe('#root', function() {
     it('pulls the root out of options', function() {
       var foo = new Foo({ post: { id: 100, name: 'stuff' }}, { root: 'post' });

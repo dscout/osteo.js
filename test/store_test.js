@@ -21,6 +21,15 @@ describe('Store', function() {
     });
   });
 
+  describe('#all', function() {
+    it('retrieves all objects stored within a namespace', function() {
+      var store = new Store();
+      store.add('tags', { id: 100 });
+
+      expect(store.all('tags')).to.have.length(1);
+    });
+  });
+
   describe('#some', function() {
     it('retrieves each from a list of ids', function() {
       var store   = new Store();

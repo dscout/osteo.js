@@ -44,6 +44,19 @@ describe('Store', function() {
     });
   });
 
+  describe('#where', function() {
+    it('retrieves all objects where a condition is true', function() {
+      var store = new Store();
+
+      store
+        .add('tags', { id: 100, name: 'alpha', group: 'greek' })
+        .add('tags', { id: 101, name: 'beta',  group: 'greek' })
+
+      expect(store.where('tags', { group: 'greek' })).to.have.length(2);
+      expect(store.where('tags', { name:  'alpha' })).to.have.length(1);
+    });
+  });
+
   describe('#count', function() {
     it('counts the number of objects within a namespace', function() {
       var store = new Store();

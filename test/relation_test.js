@@ -20,39 +20,38 @@ describe('Relation', function() {
     }
   });
 
-  it('associates multiple existing objects through hasMany', function() {
+  it('associates multiple existing objects through hasMany', function(done) {
     store
-      .add('tags',  { id: 1, name: 'alpha' })
-      .add('tags',  { id: 2, name: 'beta'  })
-      .add('notes', { id: 1, author: 'pk' });
+      .add('tags', { id: 1, name: 'alpha' })
+      .add('tags', { id: 2, name: 'beta'  })
 
     var submission = new Submission({
       tag_ids:  [1, 2],
       note_ids: [1]
     });
 
-    expect(submission.tags()).to.exist;
-    expect(submission.tags()).to.have.length(2);
-    expect(submission.tags()).to.eql([
-      { id: 1, name: 'alpha' },
-      { id: 2, name: 'beta' }
-    ]);
-
-    expect(submission.notes()).to.exist;
-    expect(submission.notes()).to.have.length(1);
-    expect(submission.notes()).to.eql([
-      { id: 1, author: 'pk' }
-    ]);
+    submission.tags().then(function(tags) {
+      expect(tags).to.exist;
+      expect(tags).to.have.length(2);
+      expect(tags).to.eql([
+        { id: 1, name: 'alpha' },
+        { id: 2, name: 'beta' }
+      ]);
+      done();
+    });
   });
 
-  it('associates a single object through hasOne', function() {
+  it('associates a single object through hasOne', function(done) {
     store.add('authors', { id: 1, name: 'John Doe' });
 
     var submission = new Submission({
       author_id: 1
     });
 
-    expect(submission.author()).to.exist;
-    expect(submission.author()).to.eql({ id: 1, name: 'John Doe' });
+    submission.author().then(function(author) {
+      expect(author).to.exist;
+      expect(author).to.eql({ id: 1, name: 'John Doe' });
+      done();
+    });
   });
 });

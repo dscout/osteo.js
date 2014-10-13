@@ -1,7 +1,7 @@
-var chai    = require('chai').expect;
-var Adapter = require('../lib/Adapter');
+var chai       = require('chai').expect;
+var XHRAdapter = require('../../lib/adapters/XHRAdapter');
 
-describe('Adapter', function() {
+describe('XHRAdapter', function() {
   var server;
 
   beforeEach(function() {
@@ -19,7 +19,7 @@ describe('Adapter', function() {
         '{"id": 12}'
       ]);
 
-      var adapter = new Adapter();
+      var adapter = new XHRAdapter();
       var model   = { url: function() {
           return '/comments/1'
         }
@@ -39,7 +39,7 @@ describe('Adapter', function() {
         '{"id": 12,"body":"Yay!"}'
       ]);
 
-      var adapter = new Adapter();
+      var adapter = new XHRAdapter();
       var model   = {
         url:  function() { return '/comments'; },
         dump: function() { return { body: 'Yay!' } }

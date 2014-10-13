@@ -25,6 +25,7 @@
     "browserify": "^4.0",
     "chai": "^1.9.1",
     "envify": "^3.0.0",
+    "es6-promise": "^1.0.0",
     "jshint": "^2.5.1",
     "karma": "^0.12.24",
     "karma-browserify": "^0.2.1",

@@ -39,7 +39,7 @@ describe('Adapter', function() {
       ]);
 
       var adapter = new Adapter();
-      var model   = { url: function() {
+      var model   = { path: function() {
           return '/comments/1'
         }
       };
@@ -60,7 +60,7 @@ describe('Adapter', function() {
 
       var adapter = new Adapter();
       var model   = {
-        url:  function() { return '/comments'; },
+        path: function() { return '/comments'; },
         dump: function() { return { body: 'Yay!' } }
       };
 

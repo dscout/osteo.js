@@ -1,7 +1,7 @@
-var chai       = require('chai').expect;
-var XHRAdapter = require('../../lib/adapters/XHRAdapter');
+var chai    = require('chai').expect;
+var Adapter = require('../lib/Adapter');
 
-describe('XHRAdapter', function() {
+describe('Adapter', function() {
   var server;
 
   beforeEach(function() {
@@ -12,6 +12,25 @@ describe('XHRAdapter', function() {
     server.restore();
   });
 
+  describe('#buildRequest', function() {
+    it('injects headers into the request', function() {
+      var adapter = new Adapter({ headers: {
+        'Accept' : 'application/json'
+      }});
+
+      var request = adapter.buildRequest('GET', '/');
+
+      expect(request.header).to.have.keys('Accept')
+    });
+
+    it('prepends the host to the path', function() {
+      var adapter = new Adapter({ host: 'https://example.com' });
+      var request = adapter.buildRequest('GET', '/stuff');
+
+      expect(request.url).to.eq('https://example.com/stuff');
+    });
+  });
+
   describe('#sync', function() {
     it('peforms a GET request with object URL', function(done) {
       server.respondWith('GET', '/comments/1', [
@@ -19,7 +38,7 @@ describe('XHRAdapter', function() {
         '{"id": 12}'
       ]);
 
-      var adapter = new XHRAdapter();
+      var adapter = new Adapter();
       var model   = { url: function() {
           return '/comments/1'
         }
@@ -39,7 +58,7 @@ describe('XHRAdapter', function() {
         '{"id": 12,"body":"Yay!"}'
       ]);
 
-      var adapter = new XHRAdapter();
+      var adapter = new Adapter();
       var model   = {
         url:  function() { return '/comments'; },
         dump: function() { return { body: 'Yay!' } }

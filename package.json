@@ -16,8 +16,7 @@
     "url": "dscout/osteo.js"
   },
   "keywords": [
-    "osteo",
-    "backbone"
+    "osteo"
   ],
   "license": "MIT",
   "dependencies": {},

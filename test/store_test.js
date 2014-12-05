@@ -10,6 +10,16 @@ describe('Store', function() {
       expect(result).to.eql(store);
     });
 
+    it('vivifies data into a model wrapper', function(done) {
+      var store = new Store();
+      store.add('tags', { id: 100 });
+
+      store.find('tags', 100).then(function(tag) {
+        expect(tag).to.have.property('get');
+        done();
+      });
+    });
+
     it('vivifies objects in buckets with matching models', function(done) {
       var Tag = function(attributes) {
         this.id = attributes.id;
@@ -39,14 +49,12 @@ describe('Store', function() {
       });
     });
 
-    it('vivifies data into a model wrapper', function(done) {
+    it('can perform synchronous retrieval', function() {
       var store = new Store();
       store.add('tags', { id: 100 });
+      var tag = store.find('tags', 100, { sync: true });
 
-      store.find('tags', 100).then(function(tag) {
-        expect(tag).to.have.property('get');
-        done();
-      });
+      expect(tag.id).to.eql(100);
     });
   });
 

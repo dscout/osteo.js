@@ -26,7 +26,7 @@ describe('Relation', function() {
     });
   };
 
-  it('associates multiple existing objects through hasMany', function(done) {
+  it('associates multiple existing objects through hasMany', function() {
     store
       .add('tags', { id: 1, name: 'alpha' })
       .add('tags', { id: 2, name: 'beta'  })
@@ -36,28 +36,26 @@ describe('Relation', function() {
       note_ids: [1]
     });
 
-    submission.tags().then(function(tags) {
-      expect(tags).to.exist;
-      expect(tags).to.have.length(2);
-      expect(toAttributes(tags)).to.eql([
-        { id: 1, name: 'alpha' },
-        { id: 2, name: 'beta' }
-      ]);
-      done();
-    });
+    var tags = submission.tags();
+
+    expect(tags).to.exist;
+    expect(tags).to.have.length(2);
+    expect(toAttributes(tags)).to.eql([
+      { id: 1, name: 'alpha' },
+      { id: 2, name: 'beta' }
+    ]);
   });
 
-  it('associates a single object through hasOne', function(done) {
+  it('associates a single object through hasOne', function() {
     store.add('authors', { id: 1, name: 'John Doe' });
 
     var submission = new Submission({
       author_id: 1
     });
 
-    submission.author().then(function(author) {
-      expect(author).to.exist;
-      expect(author.attributes).to.eql({ id: 1, name: 'John Doe' });
-      done();
-    });
+    var author = submission.author()
+
+    expect(author).to.exist;
+    expect(author.attributes).to.eql({ id: 1, name: 'John Doe' });
   });
 });

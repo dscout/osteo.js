@@ -213,14 +213,6 @@ describe('Model', function() {
     });
   });
 
-  describe('#url', function() {
-    it('defaults to a function returning undefined', function() {
-      var foo = new Foo();
-
-      expect(foo.url()).to.be.undefined;
-    });
-  });
-
   describe('#fetch', function() {
     it('pulls remote data using the set url', function() {
       var foo  = new Foo({ id: 1 });

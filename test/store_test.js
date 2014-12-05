@@ -9,6 +9,22 @@ describe('Store', function() {
 
       expect(result).to.eql(store);
     });
+
+    it('vivifies objects in buckets with matching models', function(done) {
+      var Tag = function(attributes) {
+        this.id = attributes.id;
+        this.name = attributes.name;
+      };
+
+      var store = new Store({ Tag: Tag });
+      var result = store.add('tags', { id: 100, name: 'gamma' });
+
+      store.find('tags', 100).then(function(tag) {
+        expect(tag).to.be.an.instanceOf(Tag);
+        expect(tag.name).to.eq('gamma');
+        done();
+      });
+    });
   });
 
   describe('#find', function() {
@@ -93,6 +109,7 @@ describe('Store', function() {
 
   describe('#parse', function() {
     var payload = {
+      thing:    { id: 1 },
       authors:  [{ id: 1 }],
       comments: [{ id: 1 }, { id: 2 }],
       posts:    [{ id: 1 }, { id: 2 }]
@@ -103,14 +120,16 @@ describe('Store', function() {
 
       store.parse(payload);
 
+      var thingsCount   = store.count('things');
       var authorsCount  = store.count('authors');
       var commentsCount = store.count('comments');
       var postsCount    = store.count('posts');
 
-      Promise.all([authorsCount, commentsCount, postsCount]).then(function(counts) {
+      Promise.all([thingsCount, authorsCount, commentsCount, postsCount]).then(function(counts) {
         expect(counts[0]).to.eq(1);
-        expect(counts[1]).to.eq(2);
+        expect(counts[1]).to.eq(1);
         expect(counts[2]).to.eq(2);
+        expect(counts[3]).to.eq(2);
         done();
       });
     });

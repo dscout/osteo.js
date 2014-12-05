@@ -10,14 +10,22 @@ describe('Store', function() {
       expect(result).to.eql(store);
     });
 
-    it('vivifies data into a model wrapper', function(done) {
+    it('vivifies data into a model wrapper', function() {
       var store = new Store();
       store.add('tags', { id: 100 });
 
-      store.find('tags', 100).then(function(tag) {
-        expect(tag).to.have.property('get');
-        done();
-      });
+      var tag = store.find('tags', 100, { sync: true });
+
+      expect(tag).to.have.property('get');
+    });
+
+    it('injects a reference to the store into models', function() {
+      var store = new Store();
+      store.add('tags', { id: 100 });
+
+      var tag = store.find('tags', 100, { sync: true });
+
+      expect(tag.store).to.eql(store);
     });
 
     it('vivifies objects in buckets with matching models', function(done) {

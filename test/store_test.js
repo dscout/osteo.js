@@ -18,7 +18,17 @@ describe('Store', function() {
       store.add('tags', object);
 
       store.find('tags', 100).then(function(tag) {
-        expect(tag).to.eql(object);
+        expect(tag.id).to.eq(object.id);
+        done();
+      });
+    });
+
+    it('vivifies data into a model wrapper', function(done) {
+      var store = new Store();
+      store.add('tags', { id: 100 });
+
+      store.find('tags', 100).then(function(tag) {
+        expect(tag).to.have.property('get');
         done();
       });
     });
@@ -47,7 +57,7 @@ describe('Store', function() {
         .add('tags', objectB);
 
       store.some('tags', [100, 101]).then(function(tags) {
-        expect(tags).to.eql([objectA, objectB])
+        expect(tags).to.have.length(2);
         done();
       });
     });

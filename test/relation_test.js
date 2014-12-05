@@ -20,6 +20,12 @@ describe('Relation', function() {
     }
   });
 
+  var toAttributes = function(models) {
+    return models.map(function(model) {
+      return model.attributes;
+    });
+  };
+
   it('associates multiple existing objects through hasMany', function(done) {
     store
       .add('tags', { id: 1, name: 'alpha' })
@@ -33,7 +39,7 @@ describe('Relation', function() {
     submission.tags().then(function(tags) {
       expect(tags).to.exist;
       expect(tags).to.have.length(2);
-      expect(tags).to.eql([
+      expect(toAttributes(tags)).to.eql([
         { id: 1, name: 'alpha' },
         { id: 2, name: 'beta' }
       ]);
@@ -50,7 +56,7 @@ describe('Relation', function() {
 
     submission.author().then(function(author) {
       expect(author).to.exist;
-      expect(author).to.eql({ id: 1, name: 'John Doe' });
+      expect(author.attributes).to.eql({ id: 1, name: 'John Doe' });
       done();
     });
   });

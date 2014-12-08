@@ -4,7 +4,7 @@ module.exports = function(config) {
 
     basePath: '',
 
-    frameworks: ['mocha', 'browserify', 'chai-sinon'],
+    frameworks: ['mocha', 'chai-sinon', 'browserify'],
 
     files: [
       'test/**/*.js'

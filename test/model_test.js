@@ -1,6 +1,10 @@
-var expect = require('chai').expect;
-var sinon  = require('sinon');
-var Model  = require('../lib/Model');
+var chai      = require('chai');
+var sinon     = require('sinon');
+var sinonChai = require('sinon-chai');
+var expect    = chai.expect;
+var Model     = require('../lib/Model');
+
+chai.use(sinonChai);
 
 describe('Model', function() {
   var Foo = Model.extend({});
@@ -179,53 +183,39 @@ describe('Model', function() {
     });
   });
 
-  describe('#fetch', function() {
-    it('pulls remote data using the set url', function() {
-      var foo  = new Foo({ id: 1 });
-      var sync = sinon.spy();
+  describe('#reload', function() {
+    it('delegates a reload to the store', function() {
+      var reload = sinon.spy();
+      var store  = { reload: reload };
+      var foo    = new Foo({ id: 1 }, { store: store });
 
-      Model.sync = sync;
-      foo.fetch();
+      foo.reload();
 
-      expect(sync.calledOnce).to.be.true;
-      expect(sync.calledWith('read', foo)).to.be.true;
+      expect(reload).to.be.calledWith(foo);
     });
   });
 
   describe('#destroy', function() {
     it('deletes the model remotely', function() {
-      var foo  = new Foo({ id: 1 });
-      var sync = sinon.spy();
+      var destroy = sinon.spy();
+      var store   = { destroy: destroy };
+      var foo     = new Foo({ id: 1 }, { store: store });
 
-      Model.sync = sync;
       foo.destroy();
 
-      expect(sync.calledOnce).to.be.true;
-      expect(sync.calledWith('delete', foo)).to.be.true;
+      expect(destroy).to.be.calledWith(foo);
     });
   });
 
   describe('#save', function() {
     it('updates the model and persists the changes', function() {
-      var foo  = new Foo({ id: 1 });
-      var sync = sinon.spy();
+      var save  = sinon.spy();
+      var store = { save: save };
+      var foo   = new Foo({ id: 1 }, { store: store });
 
-      Model.sync = sync;
-      foo.save({ name: 'alpha' });
-
-      expect(foo.get('name')).to.eq('alpha');
-      expect(sync.calledOnce).to.be.true;
-      expect(sync.calledWith('update', foo)).to.be.true;
-    });
-
-    it('creates a model that has not been persisted', function() {
-      var foo  = new Foo();
-      var sync = sinon.spy();
-
-      Model.sync = sync;
       foo.save();
 
-      expect(sync.calledWith('create', foo)).to.be.true;
+      expect(save).to.be.calledWith(foo);
     });
   });
 });

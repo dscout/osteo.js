@@ -40,24 +40,6 @@ describe('Model', function() {
     });
   });
 
-  describe('#getId', function() {
-    it('is the value of the id attribute', function() {
-      var foo = new Foo({ id: 100, _id: 101 });
-
-      expect(foo.getId()).to.eq(100);
-
-      foo.idAttribute = '_id';
-
-      expect(foo.getId()).to.eq(101);
-    });
-
-    it('caches the id attribute', function() {
-      var foo = new Foo({ id: 100 });
-
-      expect(foo.id).to.eq(100);
-    });
-  });
-
   describe('#isNew', function() {
     it('is new if it lacks a primary identifier', function() {
       var foo = new Foo();
